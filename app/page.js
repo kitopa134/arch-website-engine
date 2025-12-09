@@ -165,17 +165,18 @@ export default function Home() {
           <div className="animate-in fade-in duration-500">
             <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 z-0">
-                {/* Make sure hero.jpg exists! */}
-                <img src="/images/hero.jpg" alt="Construction Site" className="w-full h-full object-cover opacity-40 grayscale-[20%]" />
+                {/* HERO IMAGE KEY PROP ADDDED TO FORCE RELOAD */}
+                <img key="hero-img" src="/images/hero.jpg" alt="Construction Site" className="w-full h-full object-cover opacity-40 grayscale-[20%]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/70 to-transparent"></div>
               </div>
               <div className="relative z-10 text-center px-4 max-w-6xl mx-auto mt-[-50px]">
                 <div className="mb-6 inline-block border border-[#D4AF37] text-[#D4AF37] px-4 py-1 rounded-full text-xs font-bold tracking-[0.2em] uppercase bg-black/50 backdrop-blur-sm">
                   Excellence in Construction
                 </div>
+                {/* FIXED SPACING HERE: tracking-normal instead of tracking-tighter */}
                 <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-[0.9] tracking-tighter uppercase drop-shadow-2xl">
                   Building <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#FFE588]">Better Living</span><br/>
-                  <span className="text-2xl md:text-5xl block mt-4 text-white">for Management Companies</span>
+                  <span className="text-2xl md:text-5xl block mt-4 text-white tracking-wide">for Management Companies</span>
                 </h1>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">
                   <button onClick={() => setActiveTab('PROJECTS')} className="w-full sm:w-auto border border-[#D4AF37] text-[#D4AF37] px-8 py-4 rounded-sm font-bold hover:bg-[#D4AF37] hover:text-black transition-all text-sm tracking-[0.15em]">
