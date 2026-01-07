@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Star, MapPin, Menu, X, Hammer, CheckCircle2, Zap, Gift, Users, Cpu, DollarSign, Briefcase, FileCheck, Linkedin, HardHat as HardHatIcon, Users as UsersIcon, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-// --- THE MASTER DATABASE (SIMPLE VERSION) ---
+// --- THE MASTER DATABASE ---
 const PROJECTS_DATA = [
   // FEATURED
   { 
@@ -89,10 +89,10 @@ const Navigation = ({ activeTab, setActiveTab }) => {
             className="flex-shrink-0 flex items-center gap-3 cursor-pointer group -mt-2"
             onClick={() => setActiveTab('HOME')}
           >
-            <div className="h-20 w-20 bg-white rounded-full flex items-center justify-center p-1 shadow-[0_0_20px_rgba(212,175,55,0.6)] transition-transform group-hover:scale-110 overflow-hidden relative z-50">
+            <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center p-1 shadow-[0_0_20px_rgba(212,175,55,0.6)] transition-transform group-hover:scale-110 overflow-hidden relative z-50">
                <img src="/images/logo.png" alt="Arch Logo" className="w-full h-full object-contain" />
             </div>
-            <span className="font-black text-xl md:text-2xl tracking-tighter text-white group-hover:text-[#D4AF37] transition-colors whitespace-nowrap hidden sm:block">
+            <span className="font-black text-xl tracking-tighter text-white group-hover:text-[#D4AF37] transition-colors whitespace-nowrap hidden sm:block">
               ARCH <span className="text-[#D4AF37]">CONTRACTORS</span>
             </span>
           </div>
@@ -102,12 +102,12 @@ const Navigation = ({ activeTab, setActiveTab }) => {
               <button 
                 key={item.id} 
                 onClick={() => setActiveTab(item.id)}
-                className={`text-sm font-bold tracking-widest transition-colors ${activeTab === item.id ? 'text-[#D4AF37]' : 'text-[#A0A0A0] hover:text-[#D4AF37]'}`}
+                className={`text-xs font-bold tracking-widest transition-colors ${activeTab === item.id ? 'text-[#D4AF37]' : 'text-[#A0A0A0] hover:text-[#D4AF37]'}`}
               >
                 {item.name}
               </button>
             ))}
-            <button onClick={() => setActiveTab('NEWSLETTER')} className="bg-[#D4AF37] text-black px-5 py-2 rounded font-black hover:bg-white hover:scale-105 transition-all shadow-lg text-xs md:text-sm tracking-wide whitespace-nowrap">
+            <button onClick={() => setActiveTab('NEWSLETTER')} className="bg-[#D4AF37] text-black px-4 py-2 rounded font-black hover:bg-white hover:scale-105 transition-all shadow-lg text-xs tracking-wide whitespace-nowrap">
               GET A QUOTE
             </button>
           </div>
@@ -150,7 +150,7 @@ const Footer = ({ setActiveTab }) => (
   <footer className="bg-black border-t border-[#D4AF37]/20 py-12 text-center relative z-10">
     <div className="max-w-7xl mx-auto px-4">
       <div className="flex justify-center mb-6">
-        <div className="h-20 w-20 bg-white rounded-full flex items-center justify-center p-2 cursor-pointer hover:scale-110 transition-transform" onClick={() => setActiveTab('HOME')}>
+        <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center p-2 cursor-pointer hover:scale-110 transition-transform" onClick={() => setActiveTab('HOME')}>
             <img src="/images/logo.png" alt="Arch Contractors Logo" className="w-full h-full object-contain" />
         </div>
       </div>
@@ -194,10 +194,11 @@ export default function Home() {
 
       <main className="flex-grow pt-24">
         
-        {/* === HOME PAGE === */}
+        {/* === HOME PAGE (ZOOMED OUT HERO) === */}
         {activeTab === 'HOME' && (
           <div className="animate-in fade-in duration-500">
-            <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
+            {/* Reduced Height from 85vh to 75vh */}
+            <section className="relative h-[75vh] flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 z-0">
                 <img key="hero-img" src="/images/hero.jpg" alt="Construction Site" className="w-full h-full object-cover opacity-40 grayscale-[20%]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/70 to-transparent"></div>
@@ -232,7 +233,7 @@ export default function Home() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {PROJECTS_DATA.slice(0, 2).map(project => (
-                            <div key={project.id} className="group relative h-96 rounded-xl overflow-hidden cursor-pointer" onClick={() => setActiveTab('PROJECTS')}>
+                            <div key={project.id} className="group relative h-80 rounded-xl overflow-hidden cursor-pointer" onClick={() => setActiveTab('PROJECTS')}>
                                 <img src={project.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
                                 <div className="absolute bottom-6 left-6">
@@ -275,7 +276,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* === TEAM PAGE === */}
+        {/* === TEAM PAGE (SCALED DOWN FOR CLEANER LOOK) === */}
         {activeTab === 'TEAM' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 py-12">
             <div className="max-w-7xl mx-auto px-4">
@@ -289,7 +290,8 @@ export default function Home() {
               <h3 className="text-[#D4AF37] text-xl font-black uppercase mb-8 border-b border-[#262626] pb-4">Leadership</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
-                      <div className="h-[32rem] overflow-hidden relative">
+                      {/* REDUCED HEIGHT: h-[26rem] instead of 32rem */}
+                      <div className="h-[26rem] overflow-hidden relative">
                           <img src="/images/team-randy.jpg" className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 0 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} />
                       </div>
                       <div className="p-6 relative">
@@ -299,8 +301,9 @@ export default function Home() {
                       </div>
                   </div>
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
-                      <div className="h-[32rem] overflow-hidden relative">
-                          <img src="/images/team-vanessa.jpg" className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 1 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} />
+                      <div className="h-[26rem] overflow-hidden relative">
+                          {/* UPDATED: VANESSA V2 */}
+                          <img src="/images/vanessa-v2.jpg" className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 1 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} />
                       </div>
                       <div className="p-6 relative">
                           <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900"><Briefcase className="text-black w-5 h-5" /></div>
@@ -309,7 +312,7 @@ export default function Home() {
                       </div>
                   </div>
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
-                      <div className="h-[32rem] overflow-hidden relative">
+                      <div className="h-[26rem] overflow-hidden relative">
                           <img src="/images/team-erika.jpg" className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 2 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} />
                       </div>
                       <div className="p-6 relative">
@@ -324,7 +327,7 @@ export default function Home() {
               <h3 className="text-[#D4AF37] text-xl font-black uppercase mb-8 border-b border-[#262626] pb-4">Compliance & Operations</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all flex flex-col md:flex-row">
-                      <div className="md:w-1/2 h-[32rem] relative">
+                      <div className="md:w-1/2 h-[26rem] relative">
                           <img src="/images/team-esteban.jpg" className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 3 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} />
                       </div>
                       <div className="md:w-1/2 p-8 flex flex-col justify-center relative">
@@ -348,7 +351,7 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
                   {OFFICE_CREW.map((person, i) => (
                       <div key={person.name} className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
-                          <div className="h-[32rem] overflow-hidden relative">
+                          <div className="h-[26rem] overflow-hidden relative">
                               <img src={`/images/team-${person.name.toLowerCase()}.jpg`} alt={person.name} className={`w-full h-full object-cover ${person.align} transition-all duration-500 ${highlightIndex === (4 + i) ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} onError={(e) => {e.target.style.display='none'}} />
                           </div>
                           <div className="p-6 relative">
@@ -392,11 +395,11 @@ export default function Home() {
                 <div className="w-24 h-1.5 bg-[#D4AF37] mx-auto rounded-full"></div>
               </div>
 
-              {/* TOP 2 FEATURED */}
+              {/* TOP 2 FEATURED (Reduced Height) */}
               <div className="grid grid-cols-1 gap-24 mb-24">
                   {PROJECTS_DATA.slice(0, 2).map((project, index) => (
                       <div key={project.id} className={`group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37]/50 transition-colors duration-300 shadow-2xl ${index % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'}`}>
-                          <div className="md:w-1/2 relative h-80 md:h-auto overflow-hidden">
+                          <div className="md:w-1/2 relative h-72 md:h-auto overflow-hidden">
                               <img src={project.image} alt={project.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                               <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-md px-4 py-2 text-white text-xs font-bold rounded border-l-2 border-[#D4AF37] flex items-center gap-2">
                                   <MapPin size={14} className="text-[#D4AF37]" /> {project.address}
