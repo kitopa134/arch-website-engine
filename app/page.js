@@ -91,6 +91,14 @@ const PROJECTS_DATA = [
   { id: 24, name: 'Courts at Waterford Apt', type: 'MULTI-UNIT INTERIOR', address: '6220 Shallowford Rd, Chattanooga, TN 37421', mapLink: 'https://www.google.com/maps/search/?api=1&query=6220+Shallowford+Rd+Chattanooga+TN' },
 ];
 
+// --- OFFICE CREW CONFIG (Custom Alignment) ---
+const OFFICE_CREW = [
+  { name: 'Christopher', align: 'object-center' },
+  { name: 'Jose', align: 'object-center' },
+  { name: 'Axel', align: 'object-center' },
+  { name: 'Francisco', align: 'object-right' }, // <--- SCOOTED TO THE LEFT (BY ANCHORING RIGHT)
+];
+
 // --- MODAL COMPONENT ---
 const ProjectModal = ({ project, onClose }) => {
   if (!project) return null;
@@ -275,21 +283,21 @@ const Footer = ({ setActiveTab }) => (
 export default function Home() {
   const [activeTab, setActiveTab] = useState('HOME');
   const [selectedProject, setSelectedProject] = useState(null);
-  const [highlightIndex, setHighlightIndex] = useState(-1); // RIPPLE STATE
+  const [highlightIndex, setHighlightIndex] = useState(-1);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    // RIPPLE EFFECT LOGIC
+    // RIPPLE ANIMATION
     if (activeTab === 'TEAM') {
         let count = 0;
         const interval = setInterval(() => {
             setHighlightIndex(count);
             count++;
-            if (count > 9) clearInterval(interval); // 9 = Total people including Group
-        }, 400); // 400ms per person
+            if (count > 9) clearInterval(interval);
+        }, 400);
         return () => clearInterval(interval);
     } else {
-        setHighlightIndex(-1); // Reset
+        setHighlightIndex(-1);
     }
   }, [activeTab]);
 
@@ -411,7 +419,7 @@ export default function Home() {
                 <div className="w-24 h-1.5 bg-[#D4AF37] mx-auto mt-6"></div>
               </div>
 
-              {/* LEADERSHIP (Ripple Indices 0, 1, 2) */}
+              {/* LEADERSHIP */}
               <h3 className="text-[#D4AF37] text-xl font-black uppercase mb-8 border-b border-[#262626] pb-4">Leadership</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
@@ -455,7 +463,7 @@ export default function Home() {
                   </div>
               </div>
 
-              {/* OPS (Ripple Index 3 for Esteban) */}
+              {/* OPS */}
               <h3 className="text-[#D4AF37] text-xl font-black uppercase mb-8 border-b border-[#262626] pb-4">Compliance & Operations</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all flex flex-col md:flex-row">
@@ -481,16 +489,16 @@ export default function Home() {
                   </div>
               </div>
 
-              {/* OFFICE CREW (Ripple Indices 4, 5, 6, 7) */}
+              {/* OFFICE CREW (UPDATED LOGIC with SCOOT LEFT) */}
               <h3 className="text-[#D4AF37] text-xl font-black uppercase mb-8 border-b border-[#262626] pb-4">Office Crew</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
-                  {['Christopher', 'Jose', 'Axel', 'Francisco'].map((name, i) => (
-                      <div key={name} className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
+                  {OFFICE_CREW.map((person, i) => (
+                      <div key={person.name} className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
                           <div className="h-[32rem] overflow-hidden relative">
                               <img 
-                                src={`/images/team-${name.toLowerCase()}.jpg`} 
-                                alt={name} 
-                                className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === (4 + i) ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`}
+                                src={`/images/team-${person.name.toLowerCase()}.jpg`} 
+                                alt={person.name} 
+                                className={`w-full h-full object-cover ${person.align} transition-all duration-500 ${highlightIndex === (4 + i) ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`}
                                 onError={(e) => {e.target.style.display='none'}} 
                               />
                           </div>
@@ -498,7 +506,7 @@ export default function Home() {
                               <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900">
                                   <UsersIcon className="text-black w-5 h-5" />
                               </div>
-                              <h3 className="text-xl font-bold text-white uppercase">{name}</h3>
+                              <h3 className="text-xl font-bold text-white uppercase">{person.name}</h3>
                               <p className="text-[#D4AF37] text-xs font-bold tracking-widest uppercase">Administration</p>
                           </div>
                       </div>
@@ -516,7 +524,6 @@ export default function Home() {
                   </ul>
               </div>
 
-              {/* GROUP PHOTO (Ripple Index 8) */}
               <div className="relative w-full h-[500px] rounded-xl overflow-hidden border border-[#262626] group hover:border-[#D4AF37] transition-all shadow-2xl">
                   <img 
                     src="/images/team-group.jpg" 
@@ -532,72 +539,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* ... (PROJECTS & NEWSLETTER SECTIONS REMAIN UNCHANGED) ... */}
-        {/* === PROJECTS PAGE === */}
-        {activeTab === 'PROJECTS' && (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 py-12">
-            <div className="max-w-7xl mx-auto px-4">
-              <div className="text-center mb-16">
-                <h2 className="text-5xl font-black text-white uppercase mb-4">Projects</h2>
-                <p className="text-neutral-500 font-bold tracking-widest uppercase mb-8">We don't just build. We transform.</p>
-                <div className="w-24 h-1.5 bg-[#D4AF37] mx-auto rounded-full"></div>
-              </div>
-
-              {/* FEATURED */}
-              <div className="grid grid-cols-1 gap-24 mb-24">
-                  {PROJECTS_DATA.slice(0, 2).map((project, index) => (
-                      <div 
-                        key={project.id} 
-                        className={`group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37]/50 cursor-pointer transition-colors duration-300 shadow-2xl ${index % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'}`}
-                        onClick={() => setSelectedProject(project)}
-                      >
-                          <div className="md:w-1/2 relative h-80 md:h-96 overflow-hidden">
-                              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10"><span className="bg-[#D4AF37] text-black font-bold px-6 py-3 rounded-full uppercase tracking-widest text-xs">View Case Study</span></div>
-                              <img src={project.image} alt={project.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                              <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-md px-4 py-2 text-white text-xs font-bold rounded border-l-2 border-[#D4AF37] flex items-center gap-2">
-                                  <MapPin size={14} className="text-[#D4AF37]" /> {project.address}
-                              </div>
-                          </div>
-                          <div className="md:w-1/2 p-12 flex flex-col justify-center">
-                              <h3 className="text-3xl font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-colors">{project.name}</h3>
-                              <p className="text-[#D4AF37] text-xs font-bold mb-6 tracking-widest uppercase">{project.type}</p>
-                              <p className="text-[#A0A0A0] mb-8 leading-relaxed">{project.summary}</p>
-                              <ul className="mb-8 space-y-2">
-                                  {project.features.map((feat, i) => (
-                                      <li key={i} className="flex items-center gap-2 text-sm text-neutral-300"><CheckCircle2 size={16} className="text-[#D4AF37]" /> {feat}</li>
-                                  ))}
-                              </ul>
-                          </div>
-                      </div>
-                  ))}
-              </div>
-
-              {/* GRID */}
-              <div className="text-center mb-12"><h3 className="text-2xl font-black text-white uppercase mb-2">Confirmed Portfolio</h3></div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {PROJECTS_DATA.slice(2).map((project, index) => (
-                      <motion.div 
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                        key={project.id} 
-                        className="bg-[#0a0a0a] border border-[#262626] rounded-lg p-6 group hover:border-[#D4AF37] transition-all duration-300"
-                      >
-                          <div className="flex items-start justify-between mb-4">
-                              <h3 className="text-lg font-bold text-white group-hover:text-[#D4AF37] transition-colors">{project.name}</h3>
-                              <span className="text-[10px] font-bold text-black bg-[#D4AF37] px-2 py-1 rounded-full uppercase">{project.type}</span>
-                          </div>
-                          <p className="text-neutral-400 text-xs mb-4 flex items-start gap-2"><MapPin size={14} className="min-w-[14px] mt-0.5" /> {project.address}</p>
-                          <a href={project.mapLink} target="_blank" className="w-full block text-center border border-[#262626] text-neutral-400 py-2 rounded hover:bg-[#D4AF37] hover:text-black transition-all text-xs font-bold uppercase tracking-wider">Locate Jobsite</a>
-                      </motion.div>
-                  ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* === NEWSLETTER PAGE === */}
+        {/* ... (NEWSLETTER) ... */}
         {activeTab === 'NEWSLETTER' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 py-12">
             <div className="max-w-7xl mx-auto px-4">
