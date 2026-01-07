@@ -197,7 +197,6 @@ export default function Home() {
         {/* === HOME PAGE (ZOOMED OUT HERO) === */}
         {activeTab === 'HOME' && (
           <div className="animate-in fade-in duration-500">
-            {/* Reduced Height from 85vh to 75vh */}
             <section className="relative h-[75vh] flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 z-0">
                 <img key="hero-img" src="/images/hero.jpg" alt="Construction Site" className="w-full h-full object-cover opacity-40 grayscale-[20%]" />
@@ -375,7 +374,8 @@ export default function Home() {
               </div>
 
               <div className="relative w-full h-[500px] rounded-xl overflow-hidden border border-[#262626] group hover:border-[#D4AF37] transition-all shadow-2xl">
-                  <img src="/images/team-group.jpg" alt="Arch Contractors Team" className={`w-full h-full object-cover transition-all duration-500 ${highlightIndex === 8 ? 'grayscale-0' : 'grayscale group-hover:grayscale-0'}`} />
+                  {/* UPDATED: GROUP V2 */}
+                  <img src="/images/team-v2.jpg" alt="Arch Contractors Team" className={`w-full h-full object-cover transition-all duration-500 ${highlightIndex === 8 ? 'grayscale-0' : 'grayscale group-hover:grayscale-0'}`} />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-all duration-700"></div>
                   <div className="absolute bottom-8 left-8">
                       <h3 className="text-4xl md:text-6xl font-black text-white uppercase drop-shadow-lg tracking-tighter">One Team.<br/>One Mission.</h3>
@@ -395,7 +395,7 @@ export default function Home() {
                 <div className="w-24 h-1.5 bg-[#D4AF37] mx-auto rounded-full"></div>
               </div>
 
-              {/* TOP 2 FEATURED (Reduced Height) */}
+              {/* TOP 2 FEATURED */}
               <div className="grid grid-cols-1 gap-24 mb-24">
                   {PROJECTS_DATA.slice(0, 2).map((project, index) => (
                       <div key={project.id} className={`group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37]/50 transition-colors duration-300 shadow-2xl ${index % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'}`}>
