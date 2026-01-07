@@ -57,7 +57,9 @@ const PROJECTS_DATA = [
 // --- OFFICE CREW CONFIG ---
 const OFFICE_CREW = [
   { name: 'Christopher', align: 'object-center' },
-  { name: 'Jose', align: 'object-center' },
+  // --- THE FIX IS HERE ---
+  { name: 'Jose', align: 'object-top' }, // <--- Pinned Jose to the TOP
+  // -----------------------
   { name: 'Axel', align: 'object-center' },
   { name: 'Francisco', align: 'object-left' }, // Pinned Left
 ];
@@ -102,12 +104,12 @@ const Navigation = ({ activeTab, setActiveTab }) => {
               <button 
                 key={item.id} 
                 onClick={() => setActiveTab(item.id)}
-                className={`text-xs font-bold tracking-widest transition-colors ${activeTab === item.id ? 'text-[#D4AF37]' : 'text-[#A0A0A0] hover:text-[#D4AF37]'}`}
+                className={`text-sm font-bold tracking-widest transition-colors ${activeTab === item.id ? 'text-[#D4AF37]' : 'text-[#A0A0A0] hover:text-[#D4AF37]'}`}
               >
                 {item.name}
               </button>
             ))}
-            <button onClick={() => setActiveTab('NEWSLETTER')} className="bg-[#D4AF37] text-black px-4 py-2 rounded font-black hover:bg-white hover:scale-105 transition-all shadow-lg text-xs tracking-wide whitespace-nowrap">
+            <button onClick={() => setActiveTab('NEWSLETTER')} className="bg-[#D4AF37] text-black px-5 py-2 rounded font-black hover:bg-white hover:scale-105 transition-all shadow-lg text-sm tracking-wide whitespace-nowrap">
               GET A QUOTE
             </button>
           </div>
@@ -180,7 +182,7 @@ export default function Home() {
             setHighlightIndex(count);
             count++;
             if (count > 9) clearInterval(interval);
-        }, 400);
+        }, 1000); 
         return () => clearInterval(interval);
     } else {
         setHighlightIndex(-1);
@@ -289,7 +291,6 @@ export default function Home() {
               <h3 className="text-[#D4AF37] text-xl font-black uppercase mb-8 border-b border-[#262626] pb-4">Leadership</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
-                      {/* REDUCED HEIGHT: h-[26rem] instead of 32rem */}
                       <div className="h-[26rem] overflow-hidden relative">
                           <img src="/images/team-randy.jpg" className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 0 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} />
                       </div>
@@ -301,7 +302,6 @@ export default function Home() {
                   </div>
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
                       <div className="h-[26rem] overflow-hidden relative">
-                          {/* UPDATED: VANESSA V2 */}
                           <img src="/images/vanessa-v2.jpg" className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 1 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} />
                       </div>
                       <div className="p-6 relative">
@@ -374,7 +374,6 @@ export default function Home() {
               </div>
 
               <div className="relative w-full h-[500px] rounded-xl overflow-hidden border border-[#262626] group hover:border-[#D4AF37] transition-all shadow-2xl">
-                  {/* UPDATED: GROUP V2 */}
                   <img src="/images/team-v2.jpg" alt="Arch Contractors Team" className={`w-full h-full object-cover transition-all duration-500 ${highlightIndex === 8 ? 'grayscale-0' : 'grayscale group-hover:grayscale-0'}`} />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-all duration-700"></div>
                   <div className="absolute bottom-8 left-8">
@@ -401,120 +400,4 @@ export default function Home() {
                       <div key={project.id} className={`group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37]/50 transition-colors duration-300 shadow-2xl ${index % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'}`}>
                           <div className="md:w-1/2 relative h-72 md:h-auto overflow-hidden">
                               <img src={project.image} alt={project.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                              <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-md px-4 py-2 text-white text-xs font-bold rounded border-l-2 border-[#D4AF37] flex items-center gap-2">
-                                  <MapPin size={14} className="text-[#D4AF37]" /> {project.address}
-                              </div>
-                          </div>
-                          <div className="md:w-1/2 p-12 flex flex-col justify-center">
-                              <h3 className="text-3xl font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-colors">{project.name}</h3>
-                              <p className="text-[#D4AF37] text-xs font-bold mb-6 tracking-widest uppercase">{project.type}</p>
-                              <p className="text-[#A0A0A0] mb-8 leading-relaxed">{project.summary}</p>
-                              <ul className="mb-8 space-y-2">
-                                  {project.features.map((feat, i) => (
-                                      <li key={i} className="flex items-center gap-2 text-sm text-neutral-300"><CheckCircle2 size={16} className="text-[#D4AF37]" /> {feat}</li>
-                                  ))}
-                              </ul>
-                              <div className="flex flex-wrap gap-6">
-                                  <a href={project.mapLink} target="_blank" className="text-white border-b border-[#D4AF37] pb-1 hover:text-[#D4AF37] transition-colors text-sm font-bold tracking-wider flex items-center gap-2"><MapPin size={16} /> VIEW ON MAP</a>
-                              </div>
-                          </div>
-                      </div>
-                  ))}
-              </div>
-
-              {/* GRID */}
-              <div className="text-center mb-12"><h3 className="text-2xl font-black text-white uppercase mb-2">Confirmed Portfolio</h3></div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {PROJECTS_DATA.slice(2).map((project, index) => (
-                      <motion.div 
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                        key={project.id} 
-                        className="bg-[#0a0a0a] border border-[#262626] rounded-lg p-6 group hover:border-[#D4AF37] transition-all duration-300"
-                      >
-                          <div className="flex items-start justify-between mb-4">
-                              <h3 className="text-lg font-bold text-white group-hover:text-[#D4AF37] transition-colors">{project.name}</h3>
-                              <span className="text-[10px] font-bold text-black bg-[#D4AF37] px-2 py-1 rounded-full uppercase">{project.type}</span>
-                          </div>
-                          <p className="text-neutral-400 text-xs mb-4 flex items-start gap-2"><MapPin size={14} className="min-w-[14px] mt-0.5" /> {project.address}</p>
-                          <a href={project.mapLink} target="_blank" className="w-full block text-center border border-[#262626] text-neutral-400 py-2 rounded hover:bg-[#D4AF37] hover:text-black transition-all text-xs font-bold uppercase tracking-wider">Locate Jobsite</a>
-                      </motion.div>
-                  ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* === NEWSLETTER PAGE === */}
-        {activeTab === 'NEWSLETTER' && (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 py-12">
-            <div className="max-w-7xl mx-auto px-4">
-              <div className="text-center mb-16">
-                 <h2 className="text-5xl font-black text-white uppercase mb-2 tracking-tighter">Newsletter</h2>
-                 <p className="text-[#D4AF37] font-bold tracking-[0.3em] uppercase mb-8">Arch Contractors Insider Hub</p>
-              </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                <div className="space-y-12">
-                  <div className="bg-neutral-900/40 border border-[#D4AF37]/30 rounded-2xl overflow-hidden backdrop-blur-sm relative">
-                    <div className="absolute top-4 right-4 opacity-10 pointer-events-none"><img src="/images/logo.png" className="w-32 h-32 object-contain" /></div>
-                    <div className="p-1 bg-[#D4AF37] bg-opacity-20">
-                        <div className="bg-black p-6 rounded-t-xl border-b border-neutral-800 flex justify-between items-center">
-                           <div className="flex items-center gap-2"><Cpu className="text-[#D4AF37]" size={24} /><h3 className="text-white font-bold tracking-widest uppercase">Tech & Management</h3></div>
-                           <span className="bg-[#D4AF37] text-black text-xs font-black px-2 py-1 rounded">AVAILABLE FOR HIRE</span>
-                        </div>
-                    </div>
-                    <div className="p-8">
-                      <p className="text-neutral-400 mb-6 text-sm">Why pay for Procore when we <strong>ARE</strong> Procore?</p>
-                      <p className="text-white text-lg font-bold mb-6">Christopher & Erika: The Digital Architects.</p>
-                      <p className="text-neutral-400 mb-6 text-sm">We don't just build apartments; we build systems. From advanced jobsite tracking to custom Next.js web applications, our tech team offers a "Set It and Forget It" management service for other companies.</p>
-                      <button className="w-full border border-neutral-700 hover:border-[#D4AF37] text-white py-3 rounded uppercase font-bold text-xs tracking-widest hover:bg-[#D4AF37]/10 transition-all">Request Tech Consultation</button>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                     <div className="bg-neutral-900/50 border border-neutral-800 p-6 rounded-xl">
-                        <div className="flex items-center gap-3 mb-4"><Gift className="text-[#D4AF37]" /><h4 className="text-white font-bold uppercase">Celebrations</h4></div>
-                        <p className="text-sm text-neutral-400 mb-4">Big shoutout to <span className="text-white font-bold">Christopher</span> for his upcoming Birthday on the 6th!</p>
-                     </div>
-                     <div className="bg-neutral-900/50 border border-neutral-800 p-6 rounded-xl">
-                        <div className="flex items-center gap-3 mb-4"><Users className="text-[#D4AF37]" /><h4 className="text-white font-bold uppercase">We're Hiring</h4></div>
-                        <p className="text-sm text-neutral-400 mb-4">Looking for local drywall finishers in the Memphis area.</p>
-                        <button className="text-[#D4AF37] text-xs font-bold underline decoration-dotted">Apply Now</button>
-                     </div>
-                  </div>
-                </div>
-                <div className="bg-neutral-900 p-10 rounded-2xl border border-[#D4AF37] shadow-2xl h-fit">
-                  <h3 className="text-3xl font-black text-white mb-2 uppercase">Get A Quote</h3>
-                  <p className="text-neutral-500 mb-8 text-sm">Tell us about your project.</p>
-                  <form action="https://api.web3forms.com/submit" method="POST" className="space-y-6">
-                     <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY_HERE" />
-                     <input type="text" name="name" className="w-full bg-black border border-neutral-800 text-white p-4 rounded focus:outline-none focus:border-[#D4AF37]" placeholder="Full Name" required/>
-                     <input type="email" name="email" className="w-full bg-black border border-neutral-800 text-white p-4 rounded focus:outline-none focus:border-[#D4AF37]" placeholder="email@address.com" required/>
-                     <textarea name="message" rows="4" className="w-full bg-black border border-neutral-800 text-white p-4 rounded focus:outline-none focus:border-[#D4AF37]" placeholder="Project Details" required></textarea>
-                     <div className={`p-4 rounded-lg border transition-all duration-300 ${newsletterChecked ? 'bg-[#D4AF37]/10 border-[#D4AF37]' : 'bg-neutral-950 border-neutral-800'}`}>
-                        <div className="flex items-center justify-between">
-                           <div className="flex items-center gap-3">
-                              <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${newsletterChecked ? 'bg-[#D4AF37] text-black' : 'bg-neutral-800 text-neutral-500'}`}><Zap size={20} fill={newsletterChecked ? "black" : "none"} /></div>
-                              <div><p className={`font-bold text-sm ${newsletterChecked ? 'text-[#D4AF37]' : 'text-neutral-400'}`}>JOIN THE NEWSLETTER</p></div>
-                           </div>
-                           <label className="relative inline-flex items-center cursor-pointer">
-                             <input type="checkbox" checked={newsletterChecked} onChange={() => setNewsletterChecked(!newsletterChecked)} className="sr-only peer" />
-                             <div className="w-11 h-6 bg-neutral-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
-                           </label>
-                        </div>
-                     </div>
-                     <button type="submit" className="w-full bg-[#D4AF37] text-black font-black text-base py-5 rounded hover:bg-white hover:scale-[1.01] transition-all uppercase tracking-[0.2em] shadow-lg">SUBMIT REQUEST</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-      </main>
-
-      <Footer setActiveTab={setActiveTab} />
-    </div>
-  );
-}
+                              <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-md px-4 py-2 text-white text-xs font-bold rounded border-l-2 border-[#D4AF37] flex items
