@@ -1,72 +1,35 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Star, MapPin, Menu, X, Hammer, CheckCircle2, Zap, Gift, Users, Cpu, DollarSign, Briefcase, ClipboardList, HardHat as HardHatIcon, Users as UsersIcon, ChevronRight, FileCheck, Linkedin, ArrowLeftRight, XCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { Star, MapPin, Menu, X, Hammer, CheckCircle2, Zap, Gift, Users, Cpu, DollarSign, Briefcase, FileCheck, Linkedin, HardHat as HardHatIcon, Users as UsersIcon, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-// --- THE MASTER DATABASE ---
+// --- THE MASTER DATABASE (SIMPLE VERSION) ---
 const PROJECTS_DATA = [
+  // FEATURED
   { 
     id: 1, 
     name: 'Legacy on Lynnfield', 
     type: 'MULTI-FAMILY RENOVATION', 
     address: '5900 Cedar Forest Dr, Memphis, TN 38119', 
-    image: '/images/linfield.jpg', 
-    summary: 'Complete revitalization including structural repairs and modern interior finishing.',
+    review: 3.8, 
+    summary: 'Complete revitalization of the Lynnfield property. Scope included structural repairs, modern interior finishing, and landscaping overhaul.', 
     mapLink: 'https://www.google.com/maps/search/?api=1&query=5900+Cedar+Forest+Dr+Memphis+TN', 
-    features: ['Full Interior Gut', 'Structural Repair', '4-Month Turnaround'],
-    rooms: [
-      {
-        name: 'KITCHEN',
-        before: '/images/linfield-kitchen-before.jpg',
-        after: '/images/linfield-kitchen-after.jpg',
-        details: 'Replaced cabinets, installed new granite countertops, deep stainless steel sink, and modern faucet hardware.'
-      },
-      {
-        name: 'BEDROOM',
-        before: '/images/linfield-bedroom-before.jpg',
-        after: '/images/linfield-bedroom-after.jpg',
-        details: 'Fresh paint (Sherwin Williams), new LVP flooring, replaced trim, installed energy-efficient windows, and updated outlets.'
-      },
-      {
-        name: 'BATHROOM',
-        before: '/images/linfield-bath-before.jpg',
-        after: '/images/linfield-bath-after.jpg',
-        details: 'Installed new vanity, mirror, high-efficiency toilet, and resurfaced bathtub with new surround.'
-      }
-    ]
+    image: '/images/linfield.jpg', 
+    features: ['Full Interior Gut & Remodel', 'Structural Foundation Repair', '4-Month Turnaround'] 
   },
   { 
     id: 2, 
     name: 'Arbors of Century Center', 
     type: 'COMMERCIAL DEVELOPMENT', 
     address: '7069 E Shelby Dr, Memphis, TN 38125', 
-    image: '/images/arbors.jpg', 
-    summary: 'Large scale exterior and interior updates focused on modernizing amenities.',
+    review: 2.9, 
+    summary: 'Large scale exterior and interior updates focused on modernizing amenities and improving tenant accessibility.', 
     mapLink: 'https://www.google.com/maps/search/?api=1&query=7069+E+Shelby+Dr+Memphis+TN', 
-    features: ['Modern Lobby', 'Exterior Facade', 'HVAC Overhaul'],
-    rooms: [
-      {
-        name: 'KITCHEN',
-        before: '/images/arbors-kitchen-before.jpg',
-        after: '/images/arbors-kitchen-after.jpg',
-        details: 'Complete demo. Installed shaker style cabinets, quartz countertops, new sink plumbing, and backsplash.'
-      },
-      {
-        name: 'BEDROOM',
-        before: '/images/arbors-bedroom-before.jpg',
-        after: '/images/arbors-bedroom-after.jpg',
-        details: 'Drywall repair, full paint job, new electrical outlets, luxury vinyl plank flooring, and window unit replacement.'
-      },
-      {
-        name: 'BATHROOM',
-        before: '/images/arbors-bath-before.jpg',
-        after: '/images/arbors-bath-after.jpg',
-        details: 'New vanity installation, LED mirror, low-flow toilet, and full tub/shower replacement.'
-      }
-    ]
+    image: '/images/arbors.jpg', 
+    features: ['Modern Lobby Redesign', 'Exterior Facade Update', 'HVAC System Overhaul'] 
   },
-  // LIST 
+  // LIST
   { id: 3, name: 'Trinity Lakes Apt', type: 'REHABILITATION', address: '7935 Club Dr, Cordova, TN 38016', mapLink: 'https://www.google.com/maps/search/?api=1&query=7935+Club+Dr+Cordova+TN' },
   { id: 4, name: 'Battery Heights Apt', type: 'STRUCTURAL REPAIR', address: '3401 Campbell St, Chattanooga, TN 37406', mapLink: 'https://www.google.com/maps/search/?api=1&query=3401+Campbell+St+Chattanooga+TN' },
   { id: 5, name: 'Birmingham Tower Apt', type: 'FACADE UPDATE', address: '2712 31st Ave N, Birmingham, AL 35207', mapLink: 'https://www.google.com/maps/search/?api=1&query=2712+31st+Ave+N+Birmingham+AL' },
@@ -96,84 +59,8 @@ const OFFICE_CREW = [
   { name: 'Christopher', align: 'object-center' },
   { name: 'Jose', align: 'object-center' },
   { name: 'Axel', align: 'object-center' },
-  { name: 'Francisco', align: 'object-left' }, // Changed to object-left per request
+  { name: 'Francisco', align: 'object-left' }, // Pinned Left
 ];
-
-// --- MODAL COMPONENT ---
-const ProjectModal = ({ project, onClose }) => {
-  if (!project) return null;
-
-  return (
-    <AnimatePresence>
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md"
-        onClick={onClose}
-      >
-        <motion.div 
-          initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-[#0a0a0a] border border-[#D4AF37] w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-xl relative shadow-2xl"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="sticky top-0 bg-[#0a0a0a]/95 border-b border-[#262626] p-6 flex justify-between items-center z-10">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-black text-white uppercase">{project.name}</h2>
-              <p className="text-[#D4AF37] text-xs font-bold tracking-widest uppercase">{project.type}</p>
-            </div>
-            <button onClick={onClose} className="text-neutral-400 hover:text-white transition-colors">
-              <XCircle size={32} />
-            </button>
-          </div>
-
-          <div className="p-6 md:p-10 space-y-12">
-            {project.rooms && project.rooms.length > 0 ? (
-              project.rooms.map((room, index) => (
-                <div key={index} className="border-b border-[#262626] pb-12 last:border-0 last:pb-0">
-                  <h3 className="text-2xl font-black text-white mb-6 flex items-center gap-3">
-                    <div className="w-2 h-8 bg-[#D4AF37]"></div> {room.name}
-                  </h3>
-                  
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* BEFORE */}
-                      <div className="group relative">
-                        <div className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded z-10">BEFORE</div>
-                        <div className="overflow-hidden rounded-lg border-2 border-transparent group-hover:border-red-600 transition-all duration-300">
-                          <img src={room.before} alt={`${room.name} Before`} className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105 grayscale group-hover:grayscale-0" />
-                        </div>
-                      </div>
-                      {/* AFTER */}
-                      <div className="group relative">
-                        <div className="absolute top-2 right-2 bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded z-10">AFTER</div>
-                        <div className="overflow-hidden rounded-lg border-2 border-transparent group-hover:border-green-600 transition-all duration-300">
-                          <img src={room.after} alt={`${room.name} After`} className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105" />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex flex-col justify-center">
-                      <h4 className="text-[#D4AF37] font-bold uppercase tracking-widest text-sm mb-4">Scope of Work</h4>
-                      <p className="text-neutral-300 leading-relaxed text-sm md:text-base border-l border-[#262626] pl-4">
-                        {room.details}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-20">
-                <p className="text-neutral-500">Detailed case study coming soon.</p>
-              </div>
-            )}
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
-  );
-};
 
 // --- NAVIGATION COMPONENT ---
 const Navigation = ({ activeTab, setActiveTab }) => {
@@ -282,13 +169,11 @@ const Footer = ({ setActiveTab }) => (
 // --- MAIN HOME COMPONENT ---
 export default function Home() {
   const [activeTab, setActiveTab] = useState('HOME');
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [newsletterChecked, setNewsletterChecked] = useState(true);
   const [highlightIndex, setHighlightIndex] = useState(-1);
-  const [newsletterChecked, setNewsletterChecked] = useState(true); // <--- HERE IS THE MISSING VARIABLE
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    // RIPPLE ANIMATION
     if (activeTab === 'TEAM') {
         let count = 0;
         const interval = setInterval(() => {
@@ -306,8 +191,6 @@ export default function Home() {
     <div className="bg-[#0a0a0a] text-[#EAEAEA] font-sans min-h-screen flex flex-col selection:bg-[#D4AF37] selection:text-black">
       
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
-      
-      <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
 
       <main className="flex-grow pt-24">
         
@@ -349,30 +232,12 @@ export default function Home() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {PROJECTS_DATA.slice(0, 2).map(project => (
-                            <div 
-                              key={project.id} 
-                              className="group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37] cursor-pointer transition-all duration-300 shadow-2xl"
-                              onClick={() => setSelectedProject(project)}
-                            >
-                                <div className="relative h-80 md:h-96 overflow-hidden">
-                                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
-                                    <span className="bg-[#D4AF37] text-black font-bold px-6 py-3 rounded-full uppercase tracking-widest text-xs">View Case Study</span>
-                                  </div>
-                                  <img src={project.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                  <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-md px-4 py-2 text-white text-xs font-bold rounded border-l-2 border-[#D4AF37] flex items-center gap-2">
-                                      <MapPin size={14} className="text-[#D4AF37]" /> {project.address}
-                                  </div>
-                                </div>
-
-                                <div className="p-12 flex flex-col justify-center">
-                                    <h3 className="text-3xl font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-colors">{project.name}</h3>
-                                    <p className="text-[#D4AF37] text-xs font-bold mb-6 tracking-widest uppercase">{project.type}</p>
-                                    <p className="text-[#A0A0A0] mb-8 leading-relaxed">{project.summary}</p>
-                                    <ul className="mb-8 space-y-2">
-                                        {project.features.map((feat, i) => (
-                                            <li key={i} className="flex items-center gap-2 text-sm text-neutral-300"><CheckCircle2 size={16} className="text-[#D4AF37]" /> {feat}</li>
-                                        ))}
-                                    </ul>
+                            <div key={project.id} className="group relative h-96 rounded-xl overflow-hidden cursor-pointer" onClick={() => setActiveTab('PROJECTS')}>
+                                <img src={project.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
+                                <div className="absolute bottom-6 left-6">
+                                    <h3 className="text-2xl font-black text-white uppercase mb-2">{project.name}</h3>
+                                    <p className="text-[#D4AF37] text-xs font-bold tracking-widest">{project.type}</p>
                                 </div>
                             </div>
                         ))}
@@ -425,10 +290,7 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
                       <div className="h-[32rem] overflow-hidden relative">
-                          <img 
-                            src="/images/team-randy.jpg" 
-                            className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 0 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} 
-                          />
+                          <img src="/images/team-randy.jpg" className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 0 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} />
                       </div>
                       <div className="p-6 relative">
                           <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900"><Hammer className="text-black w-5 h-5" /></div>
@@ -438,10 +300,7 @@ export default function Home() {
                   </div>
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
                       <div className="h-[32rem] overflow-hidden relative">
-                          <img 
-                            src="/images/team-vanessa.jpg" 
-                            className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 1 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} 
-                          />
+                          <img src="/images/team-vanessa.jpg" className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 1 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} />
                       </div>
                       <div className="p-6 relative">
                           <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900"><Briefcase className="text-black w-5 h-5" /></div>
@@ -451,10 +310,7 @@ export default function Home() {
                   </div>
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
                       <div className="h-[32rem] overflow-hidden relative">
-                          <img 
-                            src="/images/team-erika.jpg" 
-                            className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 2 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} 
-                          />
+                          <img src="/images/team-erika.jpg" className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 2 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} />
                       </div>
                       <div className="p-6 relative">
                           <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900"><DollarSign className="text-black w-5 h-5" /></div>
@@ -469,10 +325,7 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all flex flex-col md:flex-row">
                       <div className="md:w-1/2 h-[32rem] relative">
-                          <img 
-                            src="/images/team-esteban.jpg" 
-                            className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 3 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} 
-                          />
+                          <img src="/images/team-esteban.jpg" className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 3 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} />
                       </div>
                       <div className="md:w-1/2 p-8 flex flex-col justify-center relative">
                           <div className="absolute top-4 right-4 bg-[#D4AF37] p-2 rounded-full"><HardHatIcon className="text-black w-4 h-4" /></div>
@@ -496,17 +349,10 @@ export default function Home() {
                   {OFFICE_CREW.map((person, i) => (
                       <div key={person.name} className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
                           <div className="h-[32rem] overflow-hidden relative">
-                              <img 
-                                src={`/images/team-${person.name.toLowerCase()}.jpg`} 
-                                alt={person.name} 
-                                className={`w-full h-full object-cover ${person.align} transition-all duration-500 ${highlightIndex === (4 + i) ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`}
-                                onError={(e) => {e.target.style.display='none'}} 
-                              />
+                              <img src={`/images/team-${person.name.toLowerCase()}.jpg`} alt={person.name} className={`w-full h-full object-cover ${person.align} transition-all duration-500 ${highlightIndex === (4 + i) ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} onError={(e) => {e.target.style.display='none'}} />
                           </div>
                           <div className="p-6 relative">
-                              <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900">
-                                  <UsersIcon className="text-black w-5 h-5" />
-                              </div>
+                              <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900"><UsersIcon className="text-black w-5 h-5" /></div>
                               <h3 className="text-xl font-bold text-white uppercase">{person.name}</h3>
                               <p className="text-[#D4AF37] text-xs font-bold tracking-widest uppercase">Administration</p>
                           </div>
@@ -526,11 +372,7 @@ export default function Home() {
               </div>
 
               <div className="relative w-full h-[500px] rounded-xl overflow-hidden border border-[#262626] group hover:border-[#D4AF37] transition-all shadow-2xl">
-                  <img 
-                    src="/images/team-group.jpg" 
-                    alt="Arch Contractors Team" 
-                    className={`w-full h-full object-cover transition-all duration-500 ${highlightIndex === 8 ? 'grayscale-0' : 'grayscale group-hover:grayscale-0'}`} 
-                  />
+                  <img src="/images/team-group.jpg" alt="Arch Contractors Team" className={`w-full h-full object-cover transition-all duration-500 ${highlightIndex === 8 ? 'grayscale-0' : 'grayscale group-hover:grayscale-0'}`} />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-all duration-700"></div>
                   <div className="absolute bottom-8 left-8">
                       <h3 className="text-4xl md:text-6xl font-black text-white uppercase drop-shadow-lg tracking-tighter">One Team.<br/>One Mission.</h3>
@@ -550,16 +392,11 @@ export default function Home() {
                 <div className="w-24 h-1.5 bg-[#D4AF37] mx-auto rounded-full"></div>
               </div>
 
-              {/* FEATURED */}
+              {/* TOP 2 FEATURED */}
               <div className="grid grid-cols-1 gap-24 mb-24">
                   {PROJECTS_DATA.slice(0, 2).map((project, index) => (
-                      <div 
-                        key={project.id} 
-                        className={`group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37]/50 cursor-pointer transition-colors duration-300 shadow-2xl ${index % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'}`}
-                        onClick={() => setSelectedProject(project)}
-                      >
-                          <div className="md:w-1/2 relative h-80 md:h-96 overflow-hidden">
-                              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10"><span className="bg-[#D4AF37] text-black font-bold px-6 py-3 rounded-full uppercase tracking-widest text-xs">View Case Study</span></div>
+                      <div key={project.id} className={`group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37]/50 transition-colors duration-300 shadow-2xl ${index % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'}`}>
+                          <div className="md:w-1/2 relative h-80 md:h-auto overflow-hidden">
                               <img src={project.image} alt={project.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                               <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-md px-4 py-2 text-white text-xs font-bold rounded border-l-2 border-[#D4AF37] flex items-center gap-2">
                                   <MapPin size={14} className="text-[#D4AF37]" /> {project.address}
@@ -574,6 +411,9 @@ export default function Home() {
                                       <li key={i} className="flex items-center gap-2 text-sm text-neutral-300"><CheckCircle2 size={16} className="text-[#D4AF37]" /> {feat}</li>
                                   ))}
                               </ul>
+                              <div className="flex flex-wrap gap-6">
+                                  <a href={project.mapLink} target="_blank" className="text-white border-b border-[#D4AF37] pb-1 hover:text-[#D4AF37] transition-colors text-sm font-bold tracking-wider flex items-center gap-2"><MapPin size={16} /> VIEW ON MAP</a>
+                              </div>
                           </div>
                       </div>
                   ))}
