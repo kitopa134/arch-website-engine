@@ -96,7 +96,7 @@ const OFFICE_CREW = [
   { name: 'Christopher', align: 'object-center' },
   { name: 'Jose', align: 'object-center' },
   { name: 'Axel', align: 'object-center' },
-  { name: 'Francisco', align: 'object-right' }, // <--- SCOOTED TO THE LEFT (BY ANCHORING RIGHT)
+  { name: 'Francisco', align: 'object-left' }, // <--- PINNED TO LEFT EDGE
 ];
 
 // --- MODAL COMPONENT ---
