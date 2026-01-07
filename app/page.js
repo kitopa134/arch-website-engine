@@ -1,15 +1,73 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
-import { Star, MapPin, Menu, X, Hammer, CheckCircle2, Zap, Gift, Users, Cpu, DollarSign, Briefcase, ClipboardList, HardHat as HardHatIcon, Users as UsersIcon, ChevronRight, FileCheck, Linkedin } from 'lucide-react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { Star, MapPin, Menu, X, Hammer, CheckCircle2, Zap, Gift, Users, Cpu, DollarSign, Briefcase, ClipboardList, HardHat as HardHatIcon, Users as UsersIcon, ChevronRight, FileCheck, Linkedin, ArrowLeftRight, XCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-// --- THE MASTER DATABASE ---
+// --- THE MASTER DATABASE (UPDATED WITH ROOM DETAILS) ---
 const PROJECTS_DATA = [
-  // FEATURED
-  { id: 1, name: 'Legacy on Lynnfield', type: 'MULTI-FAMILY RENOVATION', address: '5900 Cedar Forest Dr, Memphis, TN 38119', review: 3.8, summary: 'Complete revitalization of the Lynnfield property. Scope included structural repairs, modern interior finishing, and landscaping overhaul.', mapLink: 'https://www.google.com/maps/search/?api=1&query=5900+Cedar+Forest+Dr+Memphis+TN', image: '/images/linfield.jpg', features: ['Full Interior Gut & Remodel', 'Structural Foundation Repair', '4-Month Turnaround'] },
-  { id: 2, name: 'Arbors of Century Center', type: 'COMMERCIAL DEVELOPMENT', address: '7069 E Shelby Dr, Memphis, TN 38125', review: 2.9, summary: 'Large scale exterior and interior updates focused on modernizing amenities and improving tenant accessibility.', mapLink: 'https://www.google.com/maps/search/?api=1&query=7069+E+Shelby+Dr+Memphis+TN', image: '/images/arbors.jpg', features: ['Modern Lobby Redesign', 'Exterior Facade Update', 'HVAC System Overhaul'] },
-  // LIST
+  { 
+    id: 1, 
+    name: 'Legacy on Lynnfield', 
+    type: 'MULTI-FAMILY RENOVATION', 
+    address: '5900 Cedar Forest Dr, Memphis, TN 38119', 
+    image: '/images/linfield.jpg', // Main thumbnail
+    summary: 'Complete revitalization including structural repairs and modern interior finishing.',
+    mapLink: 'https://www.google.com/maps/search/?api=1&query=5900+Cedar+Forest+Dr+Memphis+TN', 
+    features: ['Full Interior Gut', 'Structural Repair', '4-Month Turnaround'],
+    // DETAILED ROOMS
+    rooms: [
+      {
+        name: 'KITCHEN',
+        before: '/images/linfield-kitchen-before.jpg',
+        after: '/images/linfield-kitchen-after.jpg',
+        details: 'Replaced cabinets, installed new granite countertops, deep stainless steel sink, and modern faucet hardware.'
+      },
+      {
+        name: 'BEDROOM',
+        before: '/images/linfield-bedroom-before.jpg',
+        after: '/images/linfield-bedroom-after.jpg',
+        details: 'Fresh paint (Sherwin Williams), new LVP flooring, replaced trim, installed energy-efficient windows, and updated outlets.'
+      },
+      {
+        name: 'BATHROOM',
+        before: '/images/linfield-bath-before.jpg',
+        after: '/images/linfield-bath-after.jpg',
+        details: 'Installed new vanity, mirror, high-efficiency toilet, and resurfaced bathtub with new surround.'
+      }
+    ]
+  },
+  { 
+    id: 2, 
+    name: 'Arbors of Century Center', 
+    type: 'COMMERCIAL DEVELOPMENT', 
+    address: '7069 E Shelby Dr, Memphis, TN 38125', 
+    image: '/images/arbors.jpg', 
+    summary: 'Large scale exterior and interior updates focused on modernizing amenities.',
+    mapLink: 'https://www.google.com/maps/search/?api=1&query=7069+E+Shelby+Dr+Memphis+TN', 
+    features: ['Modern Lobby', 'Exterior Facade', 'HVAC Overhaul'],
+    rooms: [
+      {
+        name: 'KITCHEN',
+        before: '/images/arbors-kitchen-before.jpg',
+        after: '/images/arbors-kitchen-after.jpg',
+        details: 'Complete demo. Installed shaker style cabinets, quartz countertops, new sink plumbing, and backsplash.'
+      },
+      {
+        name: 'BEDROOM',
+        before: '/images/arbors-bedroom-before.jpg',
+        after: '/images/arbors-bedroom-after.jpg',
+        details: 'Drywall repair, full paint job, new electrical outlets, luxury vinyl plank flooring, and window unit replacement.'
+      },
+      {
+        name: 'BATHROOM',
+        before: '/images/arbors-bath-before.jpg',
+        after: '/images/arbors-bath-after.jpg',
+        details: 'New vanity installation, LED mirror, low-flow toilet, and full tub/shower replacement.'
+      }
+    ]
+  },
+  // LIST (Standard Projects - No Deep Dive)
   { id: 3, name: 'Trinity Lakes Apt', type: 'REHABILITATION', address: '7935 Club Dr, Cordova, TN 38016', mapLink: 'https://www.google.com/maps/search/?api=1&query=7935+Club+Dr+Cordova+TN' },
   { id: 4, name: 'Battery Heights Apt', type: 'STRUCTURAL REPAIR', address: '3401 Campbell St, Chattanooga, TN 37406', mapLink: 'https://www.google.com/maps/search/?api=1&query=3401+Campbell+St+Chattanooga+TN' },
   { id: 5, name: 'Birmingham Tower Apt', type: 'FACADE UPDATE', address: '2712 31st Ave N, Birmingham, AL 35207', mapLink: 'https://www.google.com/maps/search/?api=1&query=2712+31st+Ave+N+Birmingham+AL' },
@@ -34,6 +92,89 @@ const PROJECTS_DATA = [
   { id: 24, name: 'Courts at Waterford Apt', type: 'MULTI-UNIT INTERIOR', address: '6220 Shallowford Rd, Chattanooga, TN 37421', mapLink: 'https://www.google.com/maps/search/?api=1&query=6220+Shallowford+Rd+Chattanooga+TN' },
 ];
 
+// --- MODAL COMPONENT (THE DEEP DIVE) ---
+const ProjectModal = ({ project, onClose }) => {
+  if (!project) return null;
+
+  return (
+    <AnimatePresence>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md"
+        onClick={onClose} // Close when clicking background
+      >
+        <motion.div 
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          className="bg-[#0a0a0a] border border-[#D4AF37] w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-xl relative shadow-2xl"
+          onClick={(e) => e.stopPropagation()} // Prevent close when clicking modal
+        >
+          {/* HEADER */}
+          <div className="sticky top-0 bg-[#0a0a0a]/95 border-b border-[#262626] p-6 flex justify-between items-center z-10">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-black text-white uppercase">{project.name}</h2>
+              <p className="text-[#D4AF37] text-xs font-bold tracking-widest uppercase">{project.type}</p>
+            </div>
+            <button onClick={onClose} className="text-neutral-400 hover:text-white transition-colors">
+              <XCircle size={32} />
+            </button>
+          </div>
+
+          {/* CONTENT */}
+          <div className="p-6 md:p-10 space-y-12">
+            {project.rooms && project.rooms.length > 0 ? (
+              project.rooms.map((room, index) => (
+                <div key={index} className="border-b border-[#262626] pb-12 last:border-0 last:pb-0">
+                  <h3 className="text-2xl font-black text-white mb-6 flex items-center gap-3">
+                    <div className="w-2 h-8 bg-[#D4AF37]"></div> {room.name}
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* IMAGES COLUMN */}
+                    <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* BEFORE IMAGE (Red Hover) */}
+                      <div className="group relative">
+                        <div className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded z-10">BEFORE</div>
+                        <div className="overflow-hidden rounded-lg border-2 border-transparent group-hover:border-red-600 transition-all duration-300">
+                          <img src={room.before} alt={`${room.name} Before`} className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105 grayscale group-hover:grayscale-0" />
+                        </div>
+                      </div>
+
+                      {/* AFTER IMAGE (Green Hover) */}
+                      <div className="group relative">
+                        <div className="absolute top-2 right-2 bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded z-10">AFTER</div>
+                        <div className="overflow-hidden rounded-lg border-2 border-transparent group-hover:border-green-600 transition-all duration-300">
+                          <img src={room.after} alt={`${room.name} After`} className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* DETAILS COLUMN */}
+                    <div className="flex flex-col justify-center">
+                      <h4 className="text-[#D4AF37] font-bold uppercase tracking-widest text-sm mb-4">Scope of Work</h4>
+                      <p className="text-neutral-300 leading-relaxed text-sm md:text-base border-l border-[#262626] pl-4">
+                        {room.details}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-20">
+                <p className="text-neutral-500">Detailed case study coming soon.</p>
+              </div>
+            )}
+          </div>
+
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
+
 // --- NAVIGATION COMPONENT ---
 const Navigation = ({ activeTab, setActiveTab }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -57,8 +198,6 @@ const Navigation = ({ activeTab, setActiveTab }) => {
     <nav className={`w-full fixed top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#0a0a0a]/95 backdrop-blur-md border-b border-[#D4AF37]/20 py-4' : 'bg-transparent py-6'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center gap-4">
-          
-          {/* Logo - MASSIVE BADGE - SCOOTED UP */}
           <div 
             className="flex-shrink-0 flex items-center gap-3 cursor-pointer group -mt-2"
             onClick={() => setActiveTab('HOME')}
@@ -71,7 +210,6 @@ const Navigation = ({ activeTab, setActiveTab }) => {
             </span>
           </div>
 
-          {/* Desktop Menu */}
           <div className="hidden lg:flex items-center space-x-8">
             {navLinks.map((item) => (
               <button 
@@ -87,7 +225,6 @@ const Navigation = ({ activeTab, setActiveTab }) => {
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="lg:hidden">
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white hover:text-[#D4AF37]">
               {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -96,7 +233,6 @@ const Navigation = ({ activeTab, setActiveTab }) => {
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
         <div className="lg:hidden bg-[#0a0a0a] border-b border-[#D4AF37]/20 absolute w-full h-screen flex flex-col justify-center items-center -mt-20 z-40">
           <div className="flex flex-col space-y-8 text-center">
@@ -134,7 +270,6 @@ const Footer = ({ setActiveTab }) => (
       <h2 className="text-3xl font-black text-white mb-4 tracking-tighter">ARCH CONTRACTORS</h2>
       <p className="text-[#A0A0A0] max-w-md mx-auto mb-8 font-medium">Building Better Living for Management Companies.</p>
       <div className="flex justify-center gap-8 mb-8">
-        {/* PASTE YOUR LINKEDIN URL BELOW WHERE IT SAYS href="..." */}
         <a href="https://www.linkedin.com/company/arch-contractors" target="_blank" className="text-[#A0A0A0] hover:text-[#D4AF37] flex items-center gap-2 text-sm tracking-widest uppercase font-bold transition-colors">
             <Linkedin size={20} /> LinkedIn
         </a>
@@ -147,7 +282,7 @@ const Footer = ({ setActiveTab }) => (
 // --- MAIN HOME COMPONENT ---
 export default function Home() {
   const [activeTab, setActiveTab] = useState('HOME');
-  const [newsletterChecked, setNewsletterChecked] = useState(true);
+  const [selectedProject, setSelectedProject] = useState(null); // STATE FOR MODAL
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -157,6 +292,9 @@ export default function Home() {
     <div className="bg-[#0a0a0a] text-[#EAEAEA] font-sans min-h-screen flex flex-col selection:bg-[#D4AF37] selection:text-black">
       
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+      
+      {/* MODAL (Always rendered, only visible when selectedProject is not null) */}
+      <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
 
       <main className="flex-grow pt-24">
         
@@ -165,7 +303,6 @@ export default function Home() {
           <div className="animate-in fade-in duration-500">
             <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 z-0">
-                {/* HERO IMAGE KEY PROP ADDDED TO FORCE RELOAD */}
                 <img key="hero-img" src="/images/hero.jpg" alt="Construction Site" className="w-full h-full object-cover opacity-40 grayscale-[20%]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/70 to-transparent"></div>
               </div>
@@ -173,10 +310,9 @@ export default function Home() {
                 <div className="mb-6 inline-block border border-[#D4AF37] text-[#D4AF37] px-4 py-1 rounded-full text-xs font-bold tracking-[0.2em] uppercase bg-black/50 backdrop-blur-sm">
                   Excellence in Construction
                 </div>
-                {/* FIXED SPACING HERE: tracking-normal instead of tracking-tighter */}
                 <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-[0.9] tracking-tighter uppercase drop-shadow-2xl">
                   Building <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#FFE588]">Better Living</span><br/>
-                  <span className="text-2xl md:text-5xl block mt-4 text-white tracking-wide">for Management Companies</span>
+                  <span className="text-2xl md:text-5xl block mt-4 text-white tracking-widest">for Management Companies</span>
                 </h1>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">
                   <button onClick={() => setActiveTab('PROJECTS')} className="w-full sm:w-auto border border-[#D4AF37] text-[#D4AF37] px-8 py-4 rounded-sm font-bold hover:bg-[#D4AF37] hover:text-black transition-all text-sm tracking-[0.15em]">
@@ -189,7 +325,6 @@ export default function Home() {
               </div>
             </section>
             
-            {/* Featured Section */}
             <section className="py-20 bg-neutral-900 border-t border-[#262626]">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="flex justify-between items-end mb-12">
@@ -199,14 +334,34 @@ export default function Home() {
                         </div>
                         <button onClick={() => setActiveTab('PROJECTS')} className="text-[#D4AF37] font-bold text-sm flex items-center gap-2 hover:underline">View All <ChevronRight size={16}/></button>
                     </div>
+                    {/* FEATURED PROJECTS (CLICK TO OPEN MODAL) */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {PROJECTS_DATA.slice(0, 2).map(project => (
-                            <div key={project.id} className="group relative h-96 rounded-xl overflow-hidden cursor-pointer" onClick={() => setActiveTab('PROJECTS')}>
-                                <img src={project.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
-                                <div className="absolute bottom-6 left-6">
-                                    <h3 className="text-2xl font-black text-white uppercase mb-2">{project.name}</h3>
-                                    <p className="text-[#D4AF37] text-xs font-bold tracking-widest">{project.type}</p>
+                            <div 
+                              key={project.id} 
+                              className="group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37] cursor-pointer transition-all duration-300 shadow-2xl"
+                              onClick={() => setSelectedProject(project)} // <--- OPENS MODAL
+                            >
+                                <div className="relative h-80 md:h-96 overflow-hidden">
+                                  {/* OVERLAY HINT */}
+                                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                                    <span className="bg-[#D4AF37] text-black font-bold px-6 py-3 rounded-full uppercase tracking-widest text-xs">View Case Study</span>
+                                  </div>
+                                  <img src={project.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                  <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-md px-4 py-2 text-white text-xs font-bold rounded border-l-2 border-[#D4AF37] flex items-center gap-2">
+                                      <MapPin size={14} className="text-[#D4AF37]" /> {project.address}
+                                  </div>
+                                </div>
+
+                                <div className="p-12 flex flex-col justify-center">
+                                    <h3 className="text-3xl font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-colors">{project.name}</h3>
+                                    <p className="text-[#D4AF37] text-xs font-bold mb-6 tracking-widest uppercase">{project.type}</p>
+                                    <p className="text-[#A0A0A0] mb-8 leading-relaxed">{project.summary}</p>
+                                    <ul className="mb-8 space-y-2">
+                                        {project.features.map((feat, i) => (
+                                            <li key={i} className="flex items-center gap-2 text-sm text-neutral-300"><CheckCircle2 size={16} className="text-[#D4AF37]" /> {feat}</li>
+                                        ))}
+                                    </ul>
                                 </div>
                             </div>
                         ))}
@@ -216,7 +371,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* === OUR STORY PAGE (FIXED) === */}
+        {/* === STORY PAGE === */}
         {activeTab === 'STORY' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 py-12">
             <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-16">
@@ -224,12 +379,8 @@ export default function Home() {
                   <h2 className="text-5xl font-black text-white uppercase mb-4 tracking-tight">Our Story</h2>
                   <div className="w-24 h-1.5 bg-[#D4AF37] mb-8"></div>
                   <h3 className="text-2xl font-bold text-[#D4AF37] mb-6 uppercase tracking-wide">Excellence. Integrity. Endurance.</h3>
-                  <p className="text-[#A0A0A0] mb-6 leading-relaxed text-lg">
-                    Arch Contractors wasn't built overnight. With over 20 years of dedicated service in the Memphis field, we have established ourselves as the go-to partner for large-scale property renovations. We don't just bid on jobs; we build relationships.
-                  </p>
-                  <p className="text-[#A0A0A0] mb-8 leading-relaxed text-lg">
-                    Our commitment to quality is generational. Properties like <strong>Breezy Point</strong> have entrusted us with major renovations not just once, but twice—first over 20 years ago, and again recently to modernize for the future. When management companies need a job done right the first time, they call Arch.
-                  </p>
+                  <p className="text-[#A0A0A0] mb-6 leading-relaxed text-lg">Arch Contractors wasn't built overnight. With over 20 years of dedicated service in the Memphis field, we have established ourselves as the go-to partner for large-scale property renovations. We don't just bid on jobs; we build relationships.</p>
+                  <p className="text-[#A0A0A0] mb-8 leading-relaxed text-lg">Our commitment to quality is generational. Properties like <strong>Breezy Point</strong> have entrusted us with major renovations not just once, but twice—first over 20 years ago, and again recently to modernize for the future.</p>
                   <div className="grid grid-cols-2 gap-4">
                       <div className="border border-[#262626] p-6 rounded bg-[#0a0a0a]">
                           <h4 className="text-[#D4AF37] font-black text-4xl">20+</h4>
@@ -242,14 +393,13 @@ export default function Home() {
                   </div>
               </div>
               <div className="md:w-1/2 relative">
-                  {/* CLEAN IMAGE - No Yellow Box */}
                   <img src="/images/linfield.jpg" alt="Construction Planning" className="w-full h-auto rounded-lg grayscale hover:grayscale-0 transition-all duration-500 shadow-2xl"/>
               </div>
             </div>
           </div>
         )}
 
-        {/* === OUR TEAM PAGE (FIXED HEIGHTS) === */}
+        {/* === TEAM PAGE === */}
         {activeTab === 'TEAM' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 py-12">
             <div className="max-w-7xl mx-auto px-4">
@@ -259,36 +409,27 @@ export default function Home() {
                 <div className="w-24 h-1.5 bg-[#D4AF37] mx-auto mt-6"></div>
               </div>
 
-              {/* 1. LEADERSHIP */}
+              {/* LEADERSHIP */}
               <h3 className="text-[#D4AF37] text-xl font-black uppercase mb-8 border-b border-[#262626] pb-4">Leadership</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
-                  {/* RANDY - TALLER HEIGHT */}
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
-                      <div className="h-[32rem] overflow-hidden relative">
-                          <img src="/images/team-randy.jpg" className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all" />
-                      </div>
+                      <div className="h-[32rem] overflow-hidden relative"><img src="/images/team-randy.jpg" className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all" /></div>
                       <div className="p-6 relative">
                           <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900"><Hammer className="text-black w-5 h-5" /></div>
                           <h3 className="text-xl font-bold text-white uppercase">Randy</h3>
                           <p className="text-[#D4AF37] text-xs font-bold tracking-widest uppercase">Founder & CEO</p>
                       </div>
                   </div>
-                  {/* VANESSA - TALLER HEIGHT */}
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
-                      <div className="h-[32rem] overflow-hidden relative">
-                          <img src="/images/team-vanessa.jpg" className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all" />
-                      </div>
+                      <div className="h-[32rem] overflow-hidden relative"><img src="/images/team-vanessa.jpg" className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all" /></div>
                       <div className="p-6 relative">
                           <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900"><Briefcase className="text-black w-5 h-5" /></div>
                           <h3 className="text-xl font-bold text-white uppercase">Vanessa</h3>
                           <p className="text-[#D4AF37] text-xs font-bold tracking-widest uppercase">Vice President</p>
                       </div>
                   </div>
-                  {/* ERIKA - TALLER HEIGHT */}
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
-                      <div className="h-[32rem] overflow-hidden relative">
-                          <img src="/images/team-erika.jpg" className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all" />
-                      </div>
+                      <div className="h-[32rem] overflow-hidden relative"><img src="/images/team-erika.jpg" className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all" /></div>
                       <div className="p-6 relative">
                           <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900"><DollarSign className="text-black w-5 h-5" /></div>
                           <h3 className="text-xl font-bold text-white uppercase">Erika</h3>
@@ -297,14 +438,11 @@ export default function Home() {
                   </div>
               </div>
 
-              {/* 2. COMPLIANCE & OPERATIONS */}
+              {/* OPS */}
               <h3 className="text-[#D4AF37] text-xl font-black uppercase mb-8 border-b border-[#262626] pb-4">Compliance & Operations</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
-                  {/* ESTEBAN - TALLER HEIGHT */}
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all flex flex-col md:flex-row">
-                      <div className="md:w-1/2 h-[32rem] relative">
-                          <img src="/images/team-esteban.jpg" className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all" />
-                      </div>
+                      <div className="md:w-1/2 h-[32rem] relative"><img src="/images/team-esteban.jpg" className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all" /></div>
                       <div className="md:w-1/2 p-8 flex flex-col justify-center relative">
                           <div className="absolute top-4 right-4 bg-[#D4AF37] p-2 rounded-full"><HardHatIcon className="text-black w-4 h-4" /></div>
                           <h3 className="text-2xl font-bold text-white uppercase">Esteban</h3>
@@ -312,26 +450,21 @@ export default function Home() {
                           <p className="text-[#A0A0A0] text-sm mt-4">Directs field operations with military precision.</p>
                       </div>
                   </div>
-                  {/* ERIC - GC (NO PICTURE) */}
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all flex flex-col justify-center p-8">
                        <div className="flex items-center gap-4 mb-4">
                           <div className="bg-[#D4AF37] p-3 rounded-full"><FileCheck className="text-black w-6 h-6" /></div>
-                          <div>
-                             <h3 className="text-2xl font-bold text-white uppercase">Eric</h3>
-                             <p className="text-[#D4AF37] text-sm font-bold tracking-widest uppercase">General Contractor</p>
-                          </div>
+                          <div><h3 className="text-2xl font-bold text-white uppercase">Eric</h3><p className="text-[#D4AF37] text-sm font-bold tracking-widest uppercase">General Contractor</p></div>
                        </div>
                        <p className="text-[#A0A0A0] text-lg">License Holder & Compliance Officer. Ensuring all projects meet rigorous state regulations and safety standards.</p>
                   </div>
               </div>
 
-              {/* 3. OFFICE CREW */}
+              {/* OFFICE (UPDATED NAMES) */}
               <h3 className="text-[#D4AF37] text-xl font-black uppercase mb-8 border-b border-[#262626] pb-4">Office Crew</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
-                  {['Christopher', 'Jose', 'Axel', 'Francisco'].map((name) => (
+                  {['Christopher', 'Jose', 'Axel', 'Paco'].map((name) => (
                       <div key={name} className="bg-neutral-900 border border-[#262626] rounded-lg p-6 hover:border-[#D4AF37] transition-all flex flex-col items-center text-center">
                           <div className="w-24 h-24 bg-neutral-800 rounded-full mb-4 overflow-hidden border-2 border-[#D4AF37]">
-                              {/* Ensure you have these images: team-christopher.jpg, etc. */}
                               <img src={`/images/team-${name.toLowerCase()}.jpg`} alt={name} className="w-full h-full object-cover object-center" onError={(e) => {e.target.style.display='none'}} />
                               <UsersIcon className="w-full h-full p-6 text-neutral-600" /> 
                           </div>
@@ -341,7 +474,6 @@ export default function Home() {
                   ))}
               </div>
 
-              {/* 4. MAKE IT HAPPEN CREW */}
                <div className="bg-[#0a0a0a] border border-[#262626] p-10 rounded-xl relative overflow-hidden group hover:border-[#D4AF37] transition-all mb-20">
                   <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><Zap size={120} className="text-[#D4AF37]" /></div>
                   <h3 className="text-3xl font-black text-white uppercase mb-2">Make It Happen Crew</h3>
@@ -353,7 +485,6 @@ export default function Home() {
                   </ul>
               </div>
 
-              {/* GROUP PHOTO */}
               <div className="relative w-full h-[500px] rounded-xl overflow-hidden border border-[#262626] group hover:border-[#D4AF37] transition-all shadow-2xl">
                   <img src="/images/team-group.jpg" alt="Arch Contractors Team" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-all duration-700"></div>
@@ -375,11 +506,16 @@ export default function Home() {
                 <div className="w-24 h-1.5 bg-[#D4AF37] mx-auto rounded-full"></div>
               </div>
 
-              {/* TOP 2 FEATURED */}
+              {/* FEATURED */}
               <div className="grid grid-cols-1 gap-24 mb-24">
                   {PROJECTS_DATA.slice(0, 2).map((project, index) => (
-                      <div key={project.id} className={`group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37]/50 transition-colors duration-300 shadow-2xl ${index % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'}`}>
+                      <div 
+                        key={project.id} 
+                        className={`group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37]/50 cursor-pointer transition-colors duration-300 shadow-2xl ${index % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'}`}
+                        onClick={() => setSelectedProject(project)}
+                      >
                           <div className="md:w-1/2 relative h-80 md:h-auto overflow-hidden">
+                              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10"><span className="bg-[#D4AF37] text-black font-bold px-6 py-3 rounded-full uppercase tracking-widest text-xs">View Case Study</span></div>
                               <img src={project.image} alt={project.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                               <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-md px-4 py-2 text-white text-xs font-bold rounded border-l-2 border-[#D4AF37] flex items-center gap-2">
                                   <MapPin size={14} className="text-[#D4AF37]" /> {project.address}
@@ -394,15 +530,12 @@ export default function Home() {
                                       <li key={i} className="flex items-center gap-2 text-sm text-neutral-300"><CheckCircle2 size={16} className="text-[#D4AF37]" /> {feat}</li>
                                   ))}
                               </ul>
-                              <div className="flex flex-wrap gap-6">
-                                  <a href={project.mapLink} target="_blank" className="text-white border-b border-[#D4AF37] pb-1 hover:text-[#D4AF37] transition-colors text-sm font-bold tracking-wider flex items-center gap-2"><MapPin size={16} /> VIEW ON MAP</a>
-                              </div>
                           </div>
                       </div>
                   ))}
               </div>
 
-              {/* ANIMATED GRID */}
+              {/* GRID */}
               <div className="text-center mb-12"><h3 className="text-2xl font-black text-white uppercase mb-2">Confirmed Portfolio</h3></div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {PROJECTS_DATA.slice(2).map((project, index) => (
@@ -427,7 +560,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* === NEWSLETTER PAGE (THE TECH FLEX + BLASTED LOGO) === */}
+        {/* === NEWSLETTER PAGE === */}
         {activeTab === 'NEWSLETTER' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 py-12">
             <div className="max-w-7xl mx-auto px-4">
@@ -436,14 +569,9 @@ export default function Home() {
                  <p className="text-[#D4AF37] font-bold tracking-[0.3em] uppercase mb-8">Arch Contractors Insider Hub</p>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                {/* Updates */}
                 <div className="space-y-12">
                   <div className="bg-neutral-900/40 border border-[#D4AF37]/30 rounded-2xl overflow-hidden backdrop-blur-sm relative">
-                    {/* BLASTED LOGO WATERMARK */}
-                    <div className="absolute top-4 right-4 opacity-10 pointer-events-none">
-                        <img src="/images/logo.png" className="w-32 h-32 object-contain" />
-                    </div>
-
+                    <div className="absolute top-4 right-4 opacity-10 pointer-events-none"><img src="/images/logo.png" className="w-32 h-32 object-contain" /></div>
                     <div className="p-1 bg-[#D4AF37] bg-opacity-20">
                         <div className="bg-black p-6 rounded-t-xl border-b border-neutral-800 flex justify-between items-center">
                            <div className="flex items-center gap-2"><Cpu className="text-[#D4AF37]" size={24} /><h3 className="text-white font-bold tracking-widest uppercase">Tech & Management</h3></div>
@@ -451,16 +579,9 @@ export default function Home() {
                         </div>
                     </div>
                     <div className="p-8">
-                      <p className="text-neutral-400 mb-6 text-sm">
-                        Why pay for Procore when we <strong>ARE</strong> Procore?
-                      </p>
-                      <p className="text-white text-lg font-bold mb-6">
-                        Christopher & Erika: The Digital Architects.
-                      </p>
-                      <p className="text-neutral-400 mb-6 text-sm">
-                        We don't just build apartments; we build systems. From advanced jobsite tracking to custom Next.js web applications, our tech team offers a "Set It and Forget It" management service for other companies. 
-                        Imitation is the highest form of flattery—let us upgrade your operation.
-                      </p>
+                      <p className="text-neutral-400 mb-6 text-sm">Why pay for Procore when we <strong>ARE</strong> Procore?</p>
+                      <p className="text-white text-lg font-bold mb-6">Christopher & Erika: The Digital Architects.</p>
+                      <p className="text-neutral-400 mb-6 text-sm">We don't just build apartments; we build systems. From advanced jobsite tracking to custom Next.js web applications, our tech team offers a "Set It and Forget It" management service for other companies.</p>
                       <button className="w-full border border-neutral-700 hover:border-[#D4AF37] text-white py-3 rounded uppercase font-bold text-xs tracking-widest hover:bg-[#D4AF37]/10 transition-all">Request Tech Consultation</button>
                     </div>
                   </div>
@@ -476,13 +597,10 @@ export default function Home() {
                      </div>
                   </div>
                 </div>
-                {/* Contact Form */}
                 <div className="bg-neutral-900 p-10 rounded-2xl border border-[#D4AF37] shadow-2xl h-fit">
                   <h3 className="text-3xl font-black text-white mb-2 uppercase">Get A Quote</h3>
                   <p className="text-neutral-500 mb-8 text-sm">Tell us about your project.</p>
-                  
                   <form action="https://api.web3forms.com/submit" method="POST" className="space-y-6">
-                     {/* UPDATE THIS KEY LATER */}
                      <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY_HERE" />
                      <input type="text" name="name" className="w-full bg-black border border-neutral-800 text-white p-4 rounded focus:outline-none focus:border-[#D4AF37]" placeholder="Full Name" required/>
                      <input type="email" name="email" className="w-full bg-black border border-neutral-800 text-white p-4 rounded focus:outline-none focus:border-[#D4AF37]" placeholder="email@address.com" required/>
