@@ -275,9 +275,22 @@ const Footer = ({ setActiveTab }) => (
 export default function Home() {
   const [activeTab, setActiveTab] = useState('HOME');
   const [selectedProject, setSelectedProject] = useState(null);
+  const [highlightIndex, setHighlightIndex] = useState(-1); // RIPPLE STATE
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    // RIPPLE EFFECT LOGIC
+    if (activeTab === 'TEAM') {
+        let count = 0;
+        const interval = setInterval(() => {
+            setHighlightIndex(count);
+            count++;
+            if (count > 9) clearInterval(interval); // 9 = Total people including Group
+        }, 400); // 400ms per person
+        return () => clearInterval(interval);
+    } else {
+        setHighlightIndex(-1); // Reset
+    }
   }, [activeTab]);
 
   return (
@@ -301,7 +314,6 @@ export default function Home() {
                 <div className="mb-6 inline-block border border-[#D4AF37] text-[#D4AF37] px-4 py-1 rounded-full text-xs font-bold tracking-[0.2em] uppercase bg-black/50 backdrop-blur-sm">
                   Excellence in Construction
                 </div>
-                {/* FIXED SPACING: Leading-tight + mt-8 on the span to separate lines */}
                 <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-tight tracking-tighter uppercase drop-shadow-2xl">
                   Building <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#FFE588]">Better Living</span><br/>
                   <span className="text-2xl md:text-5xl block mt-8 text-white tracking-widest">for Management Companies</span>
@@ -399,11 +411,16 @@ export default function Home() {
                 <div className="w-24 h-1.5 bg-[#D4AF37] mx-auto mt-6"></div>
               </div>
 
-              {/* LEADERSHIP */}
+              {/* LEADERSHIP (Ripple Indices 0, 1, 2) */}
               <h3 className="text-[#D4AF37] text-xl font-black uppercase mb-8 border-b border-[#262626] pb-4">Leadership</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
-                      <div className="h-[32rem] overflow-hidden relative"><img src="/images/team-randy.jpg" className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all" /></div>
+                      <div className="h-[32rem] overflow-hidden relative">
+                          <img 
+                            src="/images/team-randy.jpg" 
+                            className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 0 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} 
+                          />
+                      </div>
                       <div className="p-6 relative">
                           <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900"><Hammer className="text-black w-5 h-5" /></div>
                           <h3 className="text-xl font-bold text-white uppercase">Randy</h3>
@@ -411,7 +428,12 @@ export default function Home() {
                       </div>
                   </div>
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
-                      <div className="h-[32rem] overflow-hidden relative"><img src="/images/team-vanessa.jpg" className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all" /></div>
+                      <div className="h-[32rem] overflow-hidden relative">
+                          <img 
+                            src="/images/team-vanessa.jpg" 
+                            className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 1 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} 
+                          />
+                      </div>
                       <div className="p-6 relative">
                           <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900"><Briefcase className="text-black w-5 h-5" /></div>
                           <h3 className="text-xl font-bold text-white uppercase">Vanessa</h3>
@@ -419,7 +441,12 @@ export default function Home() {
                       </div>
                   </div>
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
-                      <div className="h-[32rem] overflow-hidden relative"><img src="/images/team-erika.jpg" className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all" /></div>
+                      <div className="h-[32rem] overflow-hidden relative">
+                          <img 
+                            src="/images/team-erika.jpg" 
+                            className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 2 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} 
+                          />
+                      </div>
                       <div className="p-6 relative">
                           <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900"><DollarSign className="text-black w-5 h-5" /></div>
                           <h3 className="text-xl font-bold text-white uppercase">Erika</h3>
@@ -428,11 +455,16 @@ export default function Home() {
                   </div>
               </div>
 
-              {/* OPS */}
+              {/* OPS (Ripple Index 3 for Esteban) */}
               <h3 className="text-[#D4AF37] text-xl font-black uppercase mb-8 border-b border-[#262626] pb-4">Compliance & Operations</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all flex flex-col md:flex-row">
-                      <div className="md:w-1/2 h-[32rem] relative"><img src="/images/team-esteban.jpg" className="w-full h-full object-cover object-center grayscale group-hover:grayscale-0 transition-all" /></div>
+                      <div className="md:w-1/2 h-[32rem] relative">
+                          <img 
+                            src="/images/team-esteban.jpg" 
+                            className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 3 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} 
+                          />
+                      </div>
                       <div className="md:w-1/2 p-8 flex flex-col justify-center relative">
                           <div className="absolute top-4 right-4 bg-[#D4AF37] p-2 rounded-full"><HardHatIcon className="text-black w-4 h-4" /></div>
                           <h3 className="text-2xl font-bold text-white uppercase">Esteban</h3>
@@ -449,18 +481,26 @@ export default function Home() {
                   </div>
               </div>
 
-              {/* OFFICE CREW (UPDATED: Francisco is back, and circles are HUGE now) */}
+              {/* OFFICE CREW (Ripple Indices 4, 5, 6, 7) */}
               <h3 className="text-[#D4AF37] text-xl font-black uppercase mb-8 border-b border-[#262626] pb-4">Office Crew</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
-                  {['Christopher', 'Jose', 'Axel', 'Francisco'].map((name) => (
-                      <div key={name} className="bg-neutral-900 border border-[#262626] rounded-lg p-6 hover:border-[#D4AF37] transition-all flex flex-col items-center text-center">
-                          {/* INCREASED SIZE TO w-40 h-40 AND CHANGED TO object-top */}
-                          <div className="w-40 h-40 bg-neutral-800 rounded-full mb-4 overflow-hidden border-2 border-[#D4AF37]">
-                              <img src={`/images/team-${name.toLowerCase()}.jpg`} alt={name} className="w-full h-full object-cover object-top" onError={(e) => {e.target.style.display='none'}} />
-                              <UsersIcon className="w-full h-full p-6 text-neutral-600" /> 
+                  {['Christopher', 'Jose', 'Axel', 'Francisco'].map((name, i) => (
+                      <div key={name} className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
+                          <div className="h-[32rem] overflow-hidden relative">
+                              <img 
+                                src={`/images/team-${name.toLowerCase()}.jpg`} 
+                                alt={name} 
+                                className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === (4 + i) ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`}
+                                onError={(e) => {e.target.style.display='none'}} 
+                              />
                           </div>
-                          <h4 className="text-white font-bold text-lg uppercase">{name}</h4>
-                          <p className="text-[#D4AF37] text-xs tracking-widest uppercase">Administration</p>
+                          <div className="p-6 relative">
+                              <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900">
+                                  <UsersIcon className="text-black w-5 h-5" />
+                              </div>
+                              <h3 className="text-xl font-bold text-white uppercase">{name}</h3>
+                              <p className="text-[#D4AF37] text-xs font-bold tracking-widest uppercase">Administration</p>
+                          </div>
                       </div>
                   ))}
               </div>
@@ -476,8 +516,13 @@ export default function Home() {
                   </ul>
               </div>
 
+              {/* GROUP PHOTO (Ripple Index 8) */}
               <div className="relative w-full h-[500px] rounded-xl overflow-hidden border border-[#262626] group hover:border-[#D4AF37] transition-all shadow-2xl">
-                  <img src="/images/team-group.jpg" alt="Arch Contractors Team" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                  <img 
+                    src="/images/team-group.jpg" 
+                    alt="Arch Contractors Team" 
+                    className={`w-full h-full object-cover transition-all duration-500 ${highlightIndex === 8 ? 'grayscale-0' : 'grayscale group-hover:grayscale-0'}`} 
+                  />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-all duration-700"></div>
                   <div className="absolute bottom-8 left-8">
                       <h3 className="text-4xl md:text-6xl font-black text-white uppercase drop-shadow-lg tracking-tighter">One Team.<br/>One Mission.</h3>
@@ -487,7 +532,8 @@ export default function Home() {
           </div>
         )}
 
-        {/* === PROJECTS PAGE (With Modal Trigger) === */}
+        {/* ... (PROJECTS & NEWSLETTER SECTIONS REMAIN UNCHANGED) ... */}
+        {/* === PROJECTS PAGE === */}
         {activeTab === 'PROJECTS' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 py-12">
             <div className="max-w-7xl mx-auto px-4">
@@ -502,13 +548,11 @@ export default function Home() {
                   {PROJECTS_DATA.slice(0, 2).map((project, index) => (
                       <div 
                         key={project.id} 
-                        className={`group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37] cursor-pointer transition-all duration-300 shadow-2xl ${index % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'}`}
+                        className={`group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37]/50 cursor-pointer transition-colors duration-300 shadow-2xl ${index % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'}`}
                         onClick={() => setSelectedProject(project)}
                       >
                           <div className="md:w-1/2 relative h-80 md:h-96 overflow-hidden">
-                              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
-                                <span className="bg-[#D4AF37] text-black font-bold px-6 py-3 rounded-full uppercase tracking-widest text-xs">View Case Study</span>
-                              </div>
+                              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10"><span className="bg-[#D4AF37] text-black font-bold px-6 py-3 rounded-full uppercase tracking-widest text-xs">View Case Study</span></div>
                               <img src={project.image} alt={project.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                               <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-md px-4 py-2 text-white text-xs font-bold rounded border-l-2 border-[#D4AF37] flex items-center gap-2">
                                   <MapPin size={14} className="text-[#D4AF37]" /> {project.address}
