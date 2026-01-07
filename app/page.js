@@ -4,18 +4,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Star, MapPin, Menu, X, Hammer, CheckCircle2, Zap, Gift, Users, Cpu, DollarSign, Briefcase, ClipboardList, HardHat as HardHatIcon, Users as UsersIcon, ChevronRight, FileCheck, Linkedin, ArrowLeftRight, XCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// --- THE MASTER DATABASE (UPDATED WITH ROOM DETAILS) ---
+// --- THE MASTER DATABASE ---
 const PROJECTS_DATA = [
   { 
     id: 1, 
     name: 'Legacy on Lynnfield', 
     type: 'MULTI-FAMILY RENOVATION', 
     address: '5900 Cedar Forest Dr, Memphis, TN 38119', 
-    image: '/images/linfield.jpg', // Main thumbnail
+    image: '/images/linfield.jpg', 
     summary: 'Complete revitalization including structural repairs and modern interior finishing.',
     mapLink: 'https://www.google.com/maps/search/?api=1&query=5900+Cedar+Forest+Dr+Memphis+TN', 
     features: ['Full Interior Gut', 'Structural Repair', '4-Month Turnaround'],
-    // DETAILED ROOMS
     rooms: [
       {
         name: 'KITCHEN',
@@ -67,7 +66,7 @@ const PROJECTS_DATA = [
       }
     ]
   },
-  // LIST (Standard Projects - No Deep Dive)
+  // LIST 
   { id: 3, name: 'Trinity Lakes Apt', type: 'REHABILITATION', address: '7935 Club Dr, Cordova, TN 38016', mapLink: 'https://www.google.com/maps/search/?api=1&query=7935+Club+Dr+Cordova+TN' },
   { id: 4, name: 'Battery Heights Apt', type: 'STRUCTURAL REPAIR', address: '3401 Campbell St, Chattanooga, TN 37406', mapLink: 'https://www.google.com/maps/search/?api=1&query=3401+Campbell+St+Chattanooga+TN' },
   { id: 5, name: 'Birmingham Tower Apt', type: 'FACADE UPDATE', address: '2712 31st Ave N, Birmingham, AL 35207', mapLink: 'https://www.google.com/maps/search/?api=1&query=2712+31st+Ave+N+Birmingham+AL' },
@@ -92,7 +91,7 @@ const PROJECTS_DATA = [
   { id: 24, name: 'Courts at Waterford Apt', type: 'MULTI-UNIT INTERIOR', address: '6220 Shallowford Rd, Chattanooga, TN 37421', mapLink: 'https://www.google.com/maps/search/?api=1&query=6220+Shallowford+Rd+Chattanooga+TN' },
 ];
 
-// --- MODAL COMPONENT (THE DEEP DIVE) ---
+// --- MODAL COMPONENT ---
 const ProjectModal = ({ project, onClose }) => {
   if (!project) return null;
 
@@ -103,16 +102,15 @@ const ProjectModal = ({ project, onClose }) => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md"
-        onClick={onClose} // Close when clicking background
+        onClick={onClose}
       >
         <motion.div 
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           className="bg-[#0a0a0a] border border-[#D4AF37] w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-xl relative shadow-2xl"
-          onClick={(e) => e.stopPropagation()} // Prevent close when clicking modal
+          onClick={(e) => e.stopPropagation()}
         >
-          {/* HEADER */}
           <div className="sticky top-0 bg-[#0a0a0a]/95 border-b border-[#262626] p-6 flex justify-between items-center z-10">
             <div>
               <h2 className="text-2xl md:text-3xl font-black text-white uppercase">{project.name}</h2>
@@ -123,7 +121,6 @@ const ProjectModal = ({ project, onClose }) => {
             </button>
           </div>
 
-          {/* CONTENT */}
           <div className="p-6 md:p-10 space-y-12">
             {project.rooms && project.rooms.length > 0 ? (
               project.rooms.map((room, index) => (
@@ -133,17 +130,15 @@ const ProjectModal = ({ project, onClose }) => {
                   </h3>
                   
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* IMAGES COLUMN */}
                     <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* BEFORE IMAGE (Red Hover) */}
+                      {/* BEFORE */}
                       <div className="group relative">
                         <div className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded z-10">BEFORE</div>
                         <div className="overflow-hidden rounded-lg border-2 border-transparent group-hover:border-red-600 transition-all duration-300">
                           <img src={room.before} alt={`${room.name} Before`} className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105 grayscale group-hover:grayscale-0" />
                         </div>
                       </div>
-
-                      {/* AFTER IMAGE (Green Hover) */}
+                      {/* AFTER */}
                       <div className="group relative">
                         <div className="absolute top-2 right-2 bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded z-10">AFTER</div>
                         <div className="overflow-hidden rounded-lg border-2 border-transparent group-hover:border-green-600 transition-all duration-300">
@@ -151,8 +146,6 @@ const ProjectModal = ({ project, onClose }) => {
                         </div>
                       </div>
                     </div>
-
-                    {/* DETAILS COLUMN */}
                     <div className="flex flex-col justify-center">
                       <h4 className="text-[#D4AF37] font-bold uppercase tracking-widest text-sm mb-4">Scope of Work</h4>
                       <p className="text-neutral-300 leading-relaxed text-sm md:text-base border-l border-[#262626] pl-4">
@@ -168,7 +161,6 @@ const ProjectModal = ({ project, onClose }) => {
               </div>
             )}
           </div>
-
         </motion.div>
       </motion.div>
     </AnimatePresence>
@@ -282,7 +274,7 @@ const Footer = ({ setActiveTab }) => (
 // --- MAIN HOME COMPONENT ---
 export default function Home() {
   const [activeTab, setActiveTab] = useState('HOME');
-  const [selectedProject, setSelectedProject] = useState(null); // STATE FOR MODAL
+  const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -293,7 +285,6 @@ export default function Home() {
       
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
       
-      {/* MODAL (Always rendered, only visible when selectedProject is not null) */}
       <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
 
       <main className="flex-grow pt-24">
@@ -310,9 +301,10 @@ export default function Home() {
                 <div className="mb-6 inline-block border border-[#D4AF37] text-[#D4AF37] px-4 py-1 rounded-full text-xs font-bold tracking-[0.2em] uppercase bg-black/50 backdrop-blur-sm">
                   Excellence in Construction
                 </div>
-                <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-[0.9] tracking-tighter uppercase drop-shadow-2xl">
+                {/* FIXED SPACING: Leading-tight + mt-8 on the span to separate lines */}
+                <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-tight tracking-tighter uppercase drop-shadow-2xl">
                   Building <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#FFE588]">Better Living</span><br/>
-                  <span className="text-2xl md:text-5xl block mt-4 text-white tracking-widest">for Management Companies</span>
+                  <span className="text-2xl md:text-5xl block mt-8 text-white tracking-widest">for Management Companies</span>
                 </h1>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">
                   <button onClick={() => setActiveTab('PROJECTS')} className="w-full sm:w-auto border border-[#D4AF37] text-[#D4AF37] px-8 py-4 rounded-sm font-bold hover:bg-[#D4AF37] hover:text-black transition-all text-sm tracking-[0.15em]">
@@ -334,16 +326,14 @@ export default function Home() {
                         </div>
                         <button onClick={() => setActiveTab('PROJECTS')} className="text-[#D4AF37] font-bold text-sm flex items-center gap-2 hover:underline">View All <ChevronRight size={16}/></button>
                     </div>
-                    {/* FEATURED PROJECTS (CLICK TO OPEN MODAL) */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {PROJECTS_DATA.slice(0, 2).map(project => (
                             <div 
                               key={project.id} 
                               className="group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37] cursor-pointer transition-all duration-300 shadow-2xl"
-                              onClick={() => setSelectedProject(project)} // <--- OPENS MODAL
+                              onClick={() => setSelectedProject(project)}
                             >
                                 <div className="relative h-80 md:h-96 overflow-hidden">
-                                  {/* OVERLAY HINT */}
                                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
                                     <span className="bg-[#D4AF37] text-black font-bold px-6 py-3 rounded-full uppercase tracking-widest text-xs">View Case Study</span>
                                   </div>
@@ -459,13 +449,14 @@ export default function Home() {
                   </div>
               </div>
 
-              {/* OFFICE (UPDATED NAMES) */}
+              {/* OFFICE CREW (UPDATED: Francisco is back, and circles are HUGE now) */}
               <h3 className="text-[#D4AF37] text-xl font-black uppercase mb-8 border-b border-[#262626] pb-4">Office Crew</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
-                  {['Christopher', 'Jose', 'Axel', 'Paco'].map((name) => (
+                  {['Christopher', 'Jose', 'Axel', 'Francisco'].map((name) => (
                       <div key={name} className="bg-neutral-900 border border-[#262626] rounded-lg p-6 hover:border-[#D4AF37] transition-all flex flex-col items-center text-center">
-                          <div className="w-24 h-24 bg-neutral-800 rounded-full mb-4 overflow-hidden border-2 border-[#D4AF37]">
-                              <img src={`/images/team-${name.toLowerCase()}.jpg`} alt={name} className="w-full h-full object-cover object-center" onError={(e) => {e.target.style.display='none'}} />
+                          {/* INCREASED SIZE TO w-40 h-40 AND CHANGED TO object-top */}
+                          <div className="w-40 h-40 bg-neutral-800 rounded-full mb-4 overflow-hidden border-2 border-[#D4AF37]">
+                              <img src={`/images/team-${name.toLowerCase()}.jpg`} alt={name} className="w-full h-full object-cover object-top" onError={(e) => {e.target.style.display='none'}} />
                               <UsersIcon className="w-full h-full p-6 text-neutral-600" /> 
                           </div>
                           <h4 className="text-white font-bold text-lg uppercase">{name}</h4>
@@ -496,7 +487,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* === PROJECTS PAGE === */}
+        {/* === PROJECTS PAGE (With Modal Trigger) === */}
         {activeTab === 'PROJECTS' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 py-12">
             <div className="max-w-7xl mx-auto px-4">
@@ -511,11 +502,13 @@ export default function Home() {
                   {PROJECTS_DATA.slice(0, 2).map((project, index) => (
                       <div 
                         key={project.id} 
-                        className={`group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37]/50 cursor-pointer transition-colors duration-300 shadow-2xl ${index % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'}`}
+                        className={`group bg-[#0a0a0a] border border-[#262626] rounded-xl overflow-hidden flex flex-col hover:border-[#D4AF37] cursor-pointer transition-all duration-300 shadow-2xl ${index % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'}`}
                         onClick={() => setSelectedProject(project)}
                       >
-                          <div className="md:w-1/2 relative h-80 md:h-auto overflow-hidden">
-                              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10"><span className="bg-[#D4AF37] text-black font-bold px-6 py-3 rounded-full uppercase tracking-widest text-xs">View Case Study</span></div>
+                          <div className="md:w-1/2 relative h-80 md:h-96 overflow-hidden">
+                              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                                <span className="bg-[#D4AF37] text-black font-bold px-6 py-3 rounded-full uppercase tracking-widest text-xs">View Case Study</span>
+                              </div>
                               <img src={project.image} alt={project.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                               <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-md px-4 py-2 text-white text-xs font-bold rounded border-l-2 border-[#D4AF37] flex items-center gap-2">
                                   <MapPin size={14} className="text-[#D4AF37]" /> {project.address}
