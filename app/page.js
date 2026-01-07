@@ -102,14 +102,12 @@ const Navigation = ({ activeTab, setActiveTab }) => {
               <button 
                 key={item.id} 
                 onClick={() => setActiveTab(item.id)}
-                // CHANGED: text-xs -> text-sm
-                className={`text-sm font-bold tracking-widest transition-colors ${activeTab === item.id ? 'text-[#D4AF37]' : 'text-[#A0A0A0] hover:text-[#D4AF37]'}`}
+                className={`text-xs font-bold tracking-widest transition-colors ${activeTab === item.id ? 'text-[#D4AF37]' : 'text-[#A0A0A0] hover:text-[#D4AF37]'}`}
               >
                 {item.name}
               </button>
             ))}
-            {/* CHANGED: text-xs -> text-sm, px-4 -> px-5 */}
-            <button onClick={() => setActiveTab('NEWSLETTER')} className="bg-[#D4AF37] text-black px-5 py-2 rounded font-black hover:bg-white hover:scale-105 transition-all shadow-lg text-sm tracking-wide whitespace-nowrap">
+            <button onClick={() => setActiveTab('NEWSLETTER')} className="bg-[#D4AF37] text-black px-4 py-2 rounded font-black hover:bg-white hover:scale-105 transition-all shadow-lg text-xs tracking-wide whitespace-nowrap">
               GET A QUOTE
             </button>
           </div>
@@ -178,12 +176,11 @@ export default function Home() {
     window.scrollTo(0, 0);
     if (activeTab === 'TEAM') {
         let count = 0;
-        // CHANGED: 400ms -> 1000ms (1 Second)
         const interval = setInterval(() => {
             setHighlightIndex(count);
             count++;
             if (count > 9) clearInterval(interval);
-        }, 1000); 
+        }, 400);
         return () => clearInterval(interval);
     } else {
         setHighlightIndex(-1);
@@ -292,6 +289,7 @@ export default function Home() {
               <h3 className="text-[#D4AF37] text-xl font-black uppercase mb-8 border-b border-[#262626] pb-4">Leadership</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
+                      {/* REDUCED HEIGHT: h-[26rem] instead of 32rem */}
                       <div className="h-[26rem] overflow-hidden relative">
                           <img src="/images/team-randy.jpg" className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 0 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} />
                       </div>
