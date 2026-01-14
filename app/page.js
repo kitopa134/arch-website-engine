@@ -157,7 +157,7 @@ const Footer = ({ setActiveTab }) => (
       <h2 className="text-3xl font-black text-white mb-4 tracking-tighter">ARCH CONTRACTORS</h2>
       <p className="text-[#A0A0A0] max-w-md mx-auto mb-8 font-medium">Building Better Living for Management Companies.</p>
       <div className="flex justify-center gap-8 mb-8">
-        <a href="https://www.linkedin.com/company/arch-contractors" target="_blank" className="text-[#A0A0A0] hover:text-[#D4AF37] flex items-center gap-2 text-sm tracking-widest uppercase font-bold transition-colors">
+        <a href="https://www.linkedin.com/in/arch-contractors-7bbbb73a5/" target="_blank" className="text-[#A0A0A0] hover:text-[#D4AF37] flex items-center gap-2 text-sm tracking-widest uppercase font-bold transition-colors">
             <Linkedin size={20} /> LinkedIn
         </a>
       </div>
