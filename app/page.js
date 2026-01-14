@@ -355,7 +355,7 @@ export default function Home() {
                           <div className="p-6 relative">
                               <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900"><UsersIcon className="text-black w-5 h-5" /></div>
                               <h3 className="text-xl font-bold text-white uppercase">{person.name}</h3>
-                              <p className="text-[#D4AF37] text-xs font-bold tracking-widest uppercase">Administration</p>
+                              <p className="text-[#D4AF37] text-xs font-bold tracking-widest uppercase">Project Manager</p>
                           </div>
                       </div>
                   ))}
