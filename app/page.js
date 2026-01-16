@@ -56,10 +56,10 @@ const PROJECTS_DATA = [
 
 // --- OFFICE CREW CONFIG ---
 const OFFICE_CREW = [
-  { name: 'Christopher', align: 'object-left-top' },
+  { name: 'Christopher', align: 'object-center' },
   { name: 'Jose', align: 'object-top' }, // Pinned to TOP
   { name: 'Axel', align: 'object-bottom' },
-  { name: 'Francisco', align: 'object-top' }, // Pinned to LEFT
+  { name: 'Francisco', align: 'object-center' }, // Pinned to LEFT
 ];
 
 // --- NAVIGATION COMPONENT ---
