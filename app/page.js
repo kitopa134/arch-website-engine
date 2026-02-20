@@ -301,7 +301,7 @@ export default function Home() {
                   </div>
                   <div className="bg-neutral-900 border border-[#262626] rounded-lg overflow-hidden group hover:border-[#D4AF37] transition-all">
                       <div className="h-[26rem] overflow-hidden relative">
-                          <img src="/images/vanessa-v2.jpg" className={`w-full h-full object-cover object-center transition-all duration-500 ${highlightIndex === 1 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} />
+                          <img src="/images/vanessa-v2.jpg" className={`w-full h-full object-cover object-top transition-all duration-500 ${highlightIndex === 1 ? 'grayscale-0 scale-105' : 'grayscale group-hover:grayscale-0'}`} />
                       </div>
                       <div className="p-6 relative">
                           <div className="absolute -top-6 right-6 bg-[#D4AF37] p-3 rounded-full border-4 border-neutral-900"><Briefcase className="text-black w-5 h-5" /></div>
