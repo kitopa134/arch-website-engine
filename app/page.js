@@ -30,7 +30,6 @@ const PROJECTS_DATA = [
     features: ['Modern Lobby Redesign', 'Exterior Facade Update', 'HVAC System Overhaul'] 
   },
   // LIST
-[
   { id: 3, name: 'Trinity Lakes Apt', type: 'FULL RENOVATION', address: '7935 Club Dr, Cordova, TN 38016', mapLink: 'https://www.google.com/maps/search/?api=1&query=7935+Club+Dr+Cordova+TN' },
   { id: 4, name: 'Battery Heights Apt', type: 'INTERIOR AND EXTERIOR RENOVATION', address: '3401 Campbell St, Chattanooga, TN 37406', mapLink: 'https://www.google.com/maps/search/?api=1&query=3401+Campbell+St+Chattanooga+TN' },
   { id: 5, name: 'Birmingham Tower Apt', type: 'SIDING INSTALLATION', address: '2712 31st Ave N, Birmingham, AL 35207', mapLink: 'https://www.google.com/maps/search/?api=1&query=2712+31st+Ave+N+Birmingham+AL' },
@@ -53,7 +52,7 @@ const PROJECTS_DATA = [
   { id: 22, name: 'The Willows', type: 'INTERIOR AND EXTERIOR RENOVATION', address: '3985 New Willow Ave, Memphis, TN 38111', mapLink: 'https://www.google.com/maps/search/?api=1&query=3985+New+Willow+Ave+Memphis+TN' },
   { id: 23, name: 'Goodlett Farms Apt', type: 'SIDING INSTALLATION', address: '7435 Goodlett Farms Pkwy, Cordova, TN 38016', mapLink: 'https://www.google.com/maps/search/?api=1&query=7435+Goodlett+Farms+Pkwy+Cordova+TN' },
   { id: 24, name: 'Courts at Waterford Apt', type: 'WINDOW INSTALL', address: '6220 Shallowford Rd, Chattanooga, TN 37421', mapLink: 'https://www.google.com/maps/search/?api=1&query=6220+Shallowford+Rd+Chattanooga+TN' },
-]]
+];
 
 // --- OFFICE CREW CONFIG ---
 const OFFICE_CREW = [
