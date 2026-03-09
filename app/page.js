@@ -412,6 +412,19 @@ export default function Page() {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
 
+  // >>> Birthday data + logic (added) <<<
+  const teamData = [
+    { name: "Axel", month: 0, day: 30 },
+    { name: "Jose Montero", month: 5, day: 7 },
+    { name: "Jose Jimenez", month: 9, day: 10 },
+    { name: "Esteban", month: 9, day: 18 },
+    { name: "Heiner", month: 9, day: 27 },
+    { name: "Erika", month: 10, day: 16 },
+    { name: "Christopher", month: 11, day: 6 },
+  ];
+  const [nextPerson, setNextPerson] = useState(null);
+  const [daysLeft, setDaysLeft] = useState(0);
+
   useEffect(() => {
     window.scrollTo(0, 0);
     if (activeTab === "TEAM") {
@@ -426,6 +439,28 @@ export default function Page() {
       setHighlightIndex(-1);
     }
   }, [activeTab]);
+
+  // Calculate next upcoming birthday once (on mount)
+  useEffect(() => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+
+    const dated = teamData.map((person) => {
+      const d = new Date(currentYear, person.month, person.day);
+      // If the date is earlier than now (and not the same calendar day), roll to next year
+      if (d < now && now.getDate() !== person.day) {
+        d.setFullYear(currentYear + 1);
+      }
+      return { ...person, fullDate: d };
+    });
+
+    dated.sort((a, b) => a.fullDate - b.fullDate);
+    const winner = dated[0];
+    const diffDays = Math.ceil((winner.fullDate - now) / (1000 * 60 * 60 * 24));
+
+    setNextPerson(winner);
+    setDaysLeft(diffDays);
+  }, []); // run once
 
   return (
     <div className="bg-[#0a0a0a] text-[#EAEAEA] font-sans min-h-screen flex flex-col selection:bg-[#D4AF37] selection:text-black">
@@ -449,7 +484,10 @@ export default function Page() {
                   Excellence in Construction
                 </div>
                 <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-tight tracking-tighter uppercase drop-shadow-2xl">
-                  Building <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#FFE588]">Better Living</span>
+                  Building{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#FFE588]">
+                    Better Living
+                  </span>
                   <br />
                   <span className="text-2xl md:text-5xl block mt-8 text-white tracking-widest">
                     for Management Companies
@@ -466,7 +504,8 @@ export default function Page() {
                     onClick={() => setActiveTab("NEWSLETTER")}
                     className="w-full sm:w-auto bg-white text-black px-8 py-4 rounded-sm font-bold hover:bg-neutral-200 transition-all text-sm tracking-[0.15em] flex items-center gap-2 justify-center"
                   >
-                    <Star className="w-4 h-4 text-[#D4AF37] fill-current" /> GET A QUOTE
+                    <Star className="w-4 h-4 text-[#D4AF37] fill-current" /> GET
+                    A QUOTE
                   </button>
                 </div>
               </div>
@@ -531,10 +570,17 @@ export default function Page() {
                   Excellence. Integrity. Endurance.
                 </h3>
                 <p className="text-[#A0A0A0] mb-6 leading-relaxed text-lg">
-                  Arch Contractors wasn't built overnight. With over 20 years of dedicated service in the Memphis field, we have established ourselves as the go-to partner for large-scale property renovations. We don't just bid on jobs; we build relationships.
+                  Arch Contractors wasn't built overnight. With over 20 years of
+                  dedicated service in the Memphis field, we have established
+                  ourselves as the go-to partner for large-scale property
+                  renovations. We don't just bid on jobs; we build
+                  relationships.
                 </p>
                 <p className="text-[#A0A0A0] mb-8 leading-relaxed text-lg">
-                  Our commitment to quality is generational. Properties like <strong>Breezy Point</strong> have entrusted us with major renovations not just once, but twice—first over 20 years ago, and again recently to modernize for the future.
+                  Our commitment to quality is generational. Properties like{" "}
+                  <strong>Breezy Point</strong> have entrusted us with major
+                  renovations not just once, but twice—first over 20 years ago,
+                  and again recently to modernize for the future.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="border border-[#262626] p-6 rounded bg-[#0a0a0a]">
@@ -676,7 +722,9 @@ export default function Page() {
                     <div className="absolute top-4 right-4 bg-[#D4AF37] p-2 rounded-full">
                       <HardHatIcon className="text-black w-4 h-4" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white uppercase">Esteban</h3>
+                    <h3 className="text-2xl font-bold text-white uppercase">
+                      Esteban
+                    </h3>
                     <p className="text-[#D4AF37] text-sm font-bold tracking-widest uppercase">
                       Lead Foreman
                     </p>
@@ -691,14 +739,17 @@ export default function Page() {
                       <FileCheck className="text-black w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-white uppercase">Eric</h3>
+                      <h3 className="text-2xl font-bold text-white uppercase">
+                        Eric
+                      </h3>
                       <p className="text-[#D4AF37] text-sm font-bold tracking-widest uppercase">
                         General Contractor
                       </p>
                     </div>
                   </div>
                   <p className="text-[#A0A0A0] text-lg">
-                    License Holder & Compliance Officer. Ensuring all projects meet rigorous state regulations and safety standards.
+                    License Holder & Compliance Officer. Ensuring all projects
+                    meet rigorous state regulations and safety standards.
                   </p>
                 </div>
               </div>
@@ -769,7 +820,9 @@ export default function Page() {
                   src="/images/team-v2.jpg"
                   alt="Arch Contractors Team"
                   className={`w-full h-full object-cover transition-all duration-500 ${
-                    highlightIndex === 8 ? "grayscale-0" : "grayscale group-hover:grayscale-0"
+                    highlightIndex === 8
+                      ? "grayscale-0"
+                      : "grayscale group-hover:grayscale-0"
                   }`}
                 />
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-all duration-700" />
@@ -815,7 +868,8 @@ export default function Page() {
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
                       <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-md px-4 py-2 text-white text-xs font-bold rounded border-l-2 border-[#D4AF37] flex items-center gap-2">
-                        <MapPin size={14} className="text-[#D4AF37]" /> {project.address}
+                        <MapPin size={14} className="text-[#D4AF37]" />{" "}
+                        {project.address}
                       </div>
                     </div>
                     <div className="md:w-1/2 p-12 flex flex-col justify-center">
@@ -825,14 +879,17 @@ export default function Page() {
                       <p className="text-[#D4AF37] text-xs font-bold mb-6 tracking-widest uppercase">
                         {project.type}
                       </p>
-                      <p className="text-[#A0A0A0] mb-8 leading-relaxed">{project.summary}</p>
+                      <p className="text-[#A0A0A0] mb-8 leading-relaxed">
+                        {project.summary}
+                      </p>
                       <ul className="mb-8 space-y-2">
                         {project.features.map((feat, i) => (
                           <li
                             key={`${project.id}-feat-${i}`}
                             className="flex items-center gap-2 text-sm text-neutral-300"
                           >
-                            <CheckCircle2 size={16} className="text-[#D4AF37]" /> {feat}
+                            <CheckCircle2 size={16} className="text-[#D4AF37]" />{" "}
+                            {feat}
                           </li>
                         ))}
                       </ul>
@@ -876,7 +933,8 @@ export default function Page() {
                       </span>
                     </div>
                     <p className="text-neutral-400 text-xs mb-4 flex items-start gap-2">
-                      <MapPin size={14} className="min-w-[14px] mt-0.5" /> {project.address}
+                      <MapPin size={14} className="min-w-[14px] mt-0.5" />{" "}
+                      {project.address}
                     </p>
                     <a
                       href={project.mapLink}
@@ -911,7 +969,11 @@ export default function Page() {
                 <div className="space-y-12">
                   <div className="bg-neutral-900/40 border border-[#D4AF37]/30 rounded-2xl overflow-hidden backdrop-blur-sm relative">
                     <div className="absolute top-4 right-4 opacity-10 pointer-events-none">
-                      <img src="/images/logo.png" alt="logo watermark" className="w-32 h-32 object-contain" />
+                      <img
+                        src="/images/logo.png"
+                        alt="logo watermark"
+                        className="w-32 h-32 object-contain"
+                      />
                     </div>
                     <div className="p-1 bg-[#D4AF37] bg-opacity-20">
                       <div className="bg-black p-6 rounded-t-xl border-b border-neutral-800 flex justify-between items-center">
@@ -934,7 +996,10 @@ export default function Page() {
                         Christopher & Erika: The Digital Architects.
                       </p>
                       <p className="text-neutral-400 mb-6 text-sm">
-                        We don't just build apartments; we build systems. From advanced jobsite tracking to custom Next.js web applications, our tech team offers a "Set It and Forget It" management service for other companies.
+                        We don't just build apartments; we build systems. From
+                        advanced jobsite tracking to custom Next.js web
+                        applications, our tech team offers a "Set It and Forget
+                        It" management service for other companies.
                       </p>
                       <button className="w-full border border-neutral-700 hover:border-[#D4AF37] text-white py-3 rounded uppercase font-bold text-xs tracking-widest hover:bg-[#D4AF37]/10 transition-all">
                         Request Tech Consultation
@@ -942,21 +1007,75 @@ export default function Page() {
                     </div>
                   </div>
 
+                  {/* ---- Celebrations + Hiring small grid ---- */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Dynamic Celebrations Card (replaces old static block) */}
                     <div className="bg-neutral-900/50 border border-neutral-800 p-6 rounded-xl">
                       <div className="flex items-center gap-3 mb-4">
                         <Gift className="text-[#D4AF37]" />
-                        <h4 className="text-white font-bold uppercase">Celebrations</h4>
+                        <h4 className="text-white font-bold uppercase">
+                          Celebrations
+                        </h4>
                       </div>
-                      <p className="text-sm text-neutral-400 mb-4">
-                        Big shoutout to <span className="text-white font-bold">Christopher</span> for his upcoming Birthday on the 6th!
-                      </p>
+
+                      {nextPerson && (
+                        <>
+                          <p className="text-sm text-neutral-400 mb-4">
+                            {daysLeft === 0 ? (
+                              <>
+                                Big birthday shoutout to{" "}
+                                <span className="text-white font-bold">
+                                  {nextPerson.name}
+                                </span>
+                                !
+                                <span className="block text-[#D4AF37] mt-1 font-semibold underline underline-offset-4">
+                                  Today is the big day! 🎉
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                Big shoutout to{" "}
+                                <span className="text-white font-bold">
+                                  {nextPerson.name}
+                                </span>{" "}
+                                for their upcoming Birthday on the{" "}
+                                <span className="text-white font-bold">
+                                  {nextPerson.day}th
+                                </span>
+                                !
+                              </>
+                            )}
+                          </p>
+
+                          {daysLeft > 0 && (
+                            <div className="flex items-center gap-2 mt-2">
+                              <div className="h-1 w-full bg-neutral-800 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-[#D4AF37] transition-all duration-700"
+                                  style={{
+                                    width: `${Math.max(
+                                      5,
+                                      100 - daysLeft * 3
+                                    )}%`,
+                                  }}
+                                />
+                              </div>
+                              <span className="text-[10px] text-neutral-500 uppercase font-bold">
+                                {daysLeft} Days
+                              </span>
+                            </div>
+                          )}
+                        </>
+                      )}
                     </div>
 
+                    {/* We're Hiring Card (unchanged) */}
                     <div className="bg-neutral-900/50 border border-neutral-800 p-6 rounded-xl">
                       <div className="flex items-center gap-3 mb-4">
                         <Users className="text-[#D4AF37]" />
-                        <h4 className="text-white font-bold uppercase">We're Hiring</h4>
+                        <h4 className="text-white font-bold uppercase">
+                          We're Hiring
+                        </h4>
                       </div>
                       <p className="text-sm text-neutral-400 mb-4">
                         Looking for local drywall finishers in the Memphis area.
@@ -977,9 +1096,17 @@ export default function Page() {
                     CapEx & 500+ Unit Specialized
                   </p>
 
-                  <form action="https://api.web3forms.com/submit" method="POST" className="space-y-6">
+                  <form
+                    action="https://api.web3forms.com/submit"
+                    method="POST"
+                    className="space-y-6"
+                  >
                     {/* TODO: Replace with your real Web3Forms key */}
-                    <input type="hidden" name="access_key" value="3b244780-beaa-4d0a-82e9-457941e75a60" />
+                    <input
+                      type="hidden"
+                      name="access_key"
+                      value="3b244780-beaa-4d0a-82e9-457941e75a60"
+                    />
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <input
@@ -1008,7 +1135,9 @@ export default function Page() {
                         <option value="" disabled>
                           Project Type
                         </option>
-                        <option value="Apartment Remodel">Apartment Remodel 200+ Unit (CapEx)</option>
+                        <option value="Apartment Remodel">
+                          Apartment Remodel 200+ Unit (CapEx)
+                        </option>
                         <option value="New Construction">New Construction</option>
                       </select>
 
@@ -1050,9 +1179,15 @@ export default function Page() {
                       className="flex items-center gap-2 text-[#D4AF37] text-xs font-bold uppercase tracking-widest cursor-pointer hover:opacity-70 transition-all select-none group"
                     >
                       <div className="p-1 bg-neutral-800 rounded group-hover:bg-[#D4AF37] group-hover:text-black transition-colors">
-                        {showAdvanced ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                        {showAdvanced ? (
+                          <ChevronUp size={14} />
+                        ) : (
+                          <ChevronDown size={14} />
+                        )}
                       </div>
-                      {showAdvanced ? "Hide Project Details" : "Add Specific Trade Scopes"}
+                      {showAdvanced
+                        ? "Hide Project Details"
+                        : "Add Specific Trade Scopes"}
                     </div>
 
                     {showAdvanced && (
@@ -1066,22 +1201,27 @@ export default function Page() {
                             Trades Needed (Select all that apply)
                           </p>
                           <div className="grid grid-cols-2 gap-3 text-xs text-neutral-400">
-                            {["Drywall", "Electrical", "Plumbing", "Framing", "Windows", "Cleaning"].map(
-                              (trade) => (
-                                <label
-                                  key={trade}
-                                  className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors"
-                                >
-                                  <input
-                                    type="checkbox"
-                                    name="trades[]"
-                                    value={trade}
-                                    className="accent-[#D4AF37]"
-                                  />
-                                  {trade}
-                                </label>
-                              )
-                            )}
+                            {[
+                              "Drywall",
+                              "Electrical",
+                              "Plumbing",
+                              "Framing",
+                              "Windows",
+                              "Cleaning",
+                            ].map((trade) => (
+                              <label
+                                key={trade}
+                                className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors"
+                              >
+                                <input
+                                  type="checkbox"
+                                  name="trades[]"
+                                  value={trade}
+                                  className="accent-[#D4AF37]"
+                                />
+                                {trade}
+                              </label>
+                            ))}
                           </div>
                         </div>
                       </motion.div>
@@ -1104,7 +1244,10 @@ export default function Page() {
                                 : "bg-neutral-800 text-neutral-500"
                             }`}
                           >
-                            <Zap size={20} fill={newsletterChecked ? "black" : "none"} />
+                            <Zap
+                              size={20}
+                              fill={newsletterChecked ? "black" : "none"}
+                            />
                           </div>
                           <div>
                             <p
@@ -1126,7 +1269,9 @@ export default function Page() {
                             type="checkbox"
                             name="newsletter"
                             checked={newsletterChecked}
-                            onChange={() => setNewsletterChecked(!newsletterChecked)}
+                            onChange={() =>
+                              setNewsletterChecked(!newsletterChecked)
+                            }
                             className="sr-only peer"
                           />
                           <div className="w-11 h-6 bg-neutral-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]" />
