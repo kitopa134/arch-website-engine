@@ -397,7 +397,7 @@ const Footer = ({ setActiveTab }) => (
         </a>
       </div>
       <p className="text-[#555] text-xs uppercase tracking-widest">
-        © {new Date().getFullYear()} Arch Contractors LLC. All Rights Reserved.
+        © {new Date().getFullYear()} ARCH Contractors LLC. All Rights Reserved.
       </p>
     </div>
   </footer>
