@@ -570,7 +570,7 @@ export default function Page() {
                   Excellence. Integrity. Endurance.
                 </h3>
                 <p className="text-[#A0A0A0] mb-6 leading-relaxed text-lg">
-                  Arch Contractors wasn't built overnight. With over 20 years of
+                  ARCH Contractors wasn't built overnight. With over 20 years of
                   dedicated service in the Memphis field, we have established
                   ourselves as the go-to partner for large-scale property
                   renovations. We don't just bid on jobs; we build
@@ -960,7 +960,7 @@ export default function Page() {
                   Newsletter
                 </h2>
                 <p className="text-[#D4AF37] font-bold tracking-[0.3em] uppercase mb-8">
-                  Arch Contractors Insider Hub
+                  ARCH Contractors Insider Hub
                 </p>
               </div>
 
