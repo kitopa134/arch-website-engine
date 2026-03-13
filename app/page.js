@@ -243,7 +243,7 @@ const PROJECTS_DATA = [
 ];
 
 const OFFICE_CREW = [
-  { name: "Christopher", align: "object-center" },
+  { name: "Christopher", align: "object-top" },
   { name: "Jose", align: "object-top" },
   { name: "Axel", align: "object-bottom" },
   { name: "Francisco", align: "object-center" },
